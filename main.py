@@ -13,3 +13,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+#========================== | CREATE | ====================
+    platform1.draw(screen)
+    platform2.draw(screen)
+    platform3.draw(screen)
+    platform4.draw(screen)
+    platform5.draw(screen)
+    platform6.draw(screen)
+    pygame.display.flip() # Update no jogo
