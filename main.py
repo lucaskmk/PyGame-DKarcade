@@ -20,4 +20,9 @@ while running:
     platform4.draw(screen)
     platform5.draw(screen)
     platform6.draw(screen)
+    stair1.draw(screen)
+    stair2.draw(screen)
+    stair3.draw(screen)
+    stair4.draw(screen)
+    stair5.draw(screen)
     pygame.display.flip() # Update no jogo
