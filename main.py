@@ -1,6 +1,5 @@
 # ========================== | Imports | ==============================
 import pygame
-import random
 from settings import *
 from sprites import *
 # ========================== | Display | ==============================
@@ -9,22 +8,32 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Donkey Kong Arcade")
 
 running = True
+clock = pygame.time.Clock()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                CHARACTER.jump()
+    screen.fill((0, 0, 0))
 #========================== | CREATE | ====================
-    platform1.draw(screen)
-    platform2.draw(screen)
-    platform3.draw(screen)
-    platform4.draw(screen)
-    platform5.draw(screen)
-    platform6.draw(screen)
-    platform7.draw(screen)
-    stair1.draw(screen)
-    stair2.draw(screen)
-    stair3.draw(screen)
-    stair4.draw(screen)
-    stair5.draw(screen)
-    stair6.draw(screen)
+    PLATFORM1.draw(screen)
+    PLATFORM2.draw(screen)
+    PLATFORM3.draw(screen)
+    PLATFORM4.draw(screen)
+    PLATFORM5.draw(screen)
+    PLATFORM6.draw(screen)
+    PLATFORM7.draw(screen)
+    STAIR1.draw(screen)
+    STAIR2.draw(screen)
+    STAIR3.draw(screen)
+    STAIR4.draw(screen)
+    STAIR5.draw(screen)
+    STAIR6.draw(screen)
+    
+    CHARACTER.update()
+    CHARACTER.draw(screen)
     pygame.display.flip() # Update no jogo
+    clock.tick(60)
+pygame.quit()
