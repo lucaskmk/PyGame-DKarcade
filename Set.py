@@ -105,8 +105,7 @@ class Character:
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.right > WIDTH:
-            self.rect.right = WIDTHdd
-
+            self.rect.right = WIDTH
     def jump(self):
         if self.on_ground or self.on_stair:
             self.velocity = -self.jump_power
