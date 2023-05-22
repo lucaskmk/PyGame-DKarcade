@@ -7,6 +7,8 @@ pygame.init()
 # Define colors
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
+WIDTH = 1000
+HEIGHT = 780
 
 def game_over_message():
     font = pygame.font.Font(None, 36)
@@ -56,7 +58,7 @@ class Character:
         self.velocity += gravity
         self.rect.y += self.velocity
 
-        for platform in platforms:
+        for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 if self.velocity > 0:
                     self.rect.bottom = platform.rect.top
@@ -69,7 +71,7 @@ class Character:
         else:
             self.on_ground = False
 
-        for stair in stairs:
+        for stair in STAIRS:
             if self.rect.colliderect(stair.rect):
                 self.rect.bottom = stair.rect.top
                 self.velocity = 0
@@ -120,7 +122,7 @@ class Barrel:
         self.rect.x -= self.speed
         self.rect.y += self.y_velocity
 
-        for platform in platforms:
+        for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 self.rect.bottom = platform.rect.top
                 self.y_velocity = 0
@@ -132,36 +134,35 @@ class Barrel:
         pygame.draw.rect(screen, self.color, self.rect)
 
 # Set up display and initialize Pygame
-WIDTH = 900
-HEIGHT = 800
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Donkey Kong Arcade")
 
+# ========================= | Objects | ================================================================================================================================================== 
+# (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
 # Create platforms
-platform1 = Platform(0, 950, 8000, 20, RED)
-platform2 = Platform(0, 950-150, 8000, 20, RED)
-platform3 = Platform(0, 950-300, 8000, 20, RED)
-platform4 = Platform(0, 950-450, 8000, 20, RED)
-platform5 = Platform(0, 950-600, 8000, 20, RED)
-platform6 = Platform(0, 950-750, 8000, 20, RED)
-platform7 = Platform(200, 950-870, 200, 20, RED)
-stair1 = Stair(720, 950-150, 50, 150, WHITE)
-stair2 = Stair(30, 950-300, 50, 150, WHITE)
-stair3 = Stair(720, 950-450, 50, 150, WHITE)
-stair4 = Stair(30, 950-600, 50, 150, WHITE)
-stair5 = Stair(720, 950-750, 50, 150, WHITE)
-stair6 = Stair(320, 950-870, 50, 120, WHITE)
+plataforma_inicial=Platform(0,HEIGHT-50, WIDTH, 50, RED)
+PLATFORMS=[plataforma_inicial]
+STAIRS=[]
 
-# Create character
-character = Character(100, 930, 20, 50, WHITE)
-# Store platforms and stairs in separate lists for collision detection
-platforms = [platform1, platform2, platform3, platform4, platform5, platform6, platform7]
-stairs = [stair1, stair2, stair3, stair4, stair5, stair6]
+for i in range(1,5):
+    if (-1)**i < 0:
+        EIXO_X_PLATAFORMA = 0
+        EIXO_X_ESCADA=WIDTH-70
+    else:
+        EIXO_X_PLATAFORMA=50
+        EIXO_X_ESCADA=70
+    PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i, WIDTH-40, 20, RED))
+    STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-50)-150*i, 20, 150, WHITE))
+#stair6 = Stair(320, 950-870, 50, 120, WHITE)
+
+# Create character   (0,HEIGHT-50, WIDTH, 50, RED)
+character = Character(100, (HEIGHT-50-20), 20, 50, WHITE)
 # Create barrels
 barrels = []
 barrel_radius = 10
 barrel_speed = 4
-for platform in platforms:
+for platform in PLATFORMS:
     x = random.randint(830, 1060)
     y = platform.rect.top - barrel_radius
     barrel = Barrel(x, y, barrel_radius, RED, barrel_speed)
@@ -197,10 +198,10 @@ while running:
 
     screen.fill((0, 0, 0))
 
-    for platform in platforms:
+    for platform in PLATFORMS:
         platform.draw(screen)
 
-    for stair in stairs:
+    for stair in STAIRS:
         stair.draw(screen)
 
     if not game_over:
@@ -214,7 +215,7 @@ while running:
                 break
         spawn_timer += clock.get_rawtime()
         if spawn_timer >= spawn_interval:
-            for platform in platforms:
+            for platform in PLATFORMS:
                 x = random.randint(830, 1060)
                 y = platform.rect.top - barrel_radius
                 barrel = Barrel(x, y, barrel_radius, RED, barrel_speed)
