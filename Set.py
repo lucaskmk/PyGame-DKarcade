@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -73,8 +74,18 @@ class Character(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, width, height)
         self.velocity = 0
         self.jump_power = 8
-        self.on_ground = False
-        self.on_stair = False
+
+        self.last_jump = pygame.time.get_ticks()
+        self.jump_ticks = 700
+    
+    
+    def jump(self):
+        now = pygame.time.get_ticks()
+        ticks_decorridos = now - self.last_jump
+        if ticks_decorridos > self.jump_ticks:
+            self.velocity = -self.jump_power
+            self.last_jump=now
+    
 
     def update(self):
         self.velocity += gravity
@@ -110,7 +121,6 @@ class Character(pygame.sprite.Sprite):
             self.image= pygame.image.load('imagens/sprite_mario_andando_esquerda.png').convert_alpha()
             self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
             LASTKEY = 'left'
-        
 
 
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:   
@@ -130,12 +140,6 @@ class Character(pygame.sprite.Sprite):
                 self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
 
-
-
-            
-
-
-        
         if self.on_stair:
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 self.rect.y -= 1
@@ -158,10 +162,10 @@ class Character(pygame.sprite.Sprite):
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
 
-    def jump(self):
-        if self.on_ground or self.on_stair:
-            self.velocity = -self.jump_power
-            self.on_ground = False
+
+
+
+
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
@@ -214,11 +218,11 @@ STAIRS=[]
 for i in range(1,5):
     if (-1)**i < 0:
         EIXO_X_PLATAFORMA = 0
-        EIXO_X_ESCADA=WIDTH-70
+        EIXO_X_ESCADA=WIDTH-80
     else:
         EIXO_X_PLATAFORMA=50
         EIXO_X_ESCADA=70
-    PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i, WIDTH-40, 20, RED))
+    PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i, WIDTH-50, 20, RED))
     STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-50)-150*i, 20, 150, WHITE))
 #stair6 = Stair(320, 950-870, 50, 120, WHITE)
 
@@ -241,7 +245,7 @@ gravity = 0.4
 running = True
 clock = pygame.time.Clock()
 spawn_timer = 0
-spawn_interval = random.randint(100,150)
+spawn_interval = 150
 game_over = False
 while running:
     for event in pygame.event.get():
@@ -251,7 +255,12 @@ while running:
             if game_over:
                 reset_game()
             elif event.key == pygame.K_SPACE:
+                now=pygame.time.get_ticks()
                 character.jump()
+
+
+                
+
 
     screen.fill((0, 0, 0))
 
