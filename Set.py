@@ -255,7 +255,6 @@ while running:
             if game_over:
                 reset_game()
             elif event.key == pygame.K_SPACE:
-                now=pygame.time.get_ticks()
                 character.jump()
 
 
