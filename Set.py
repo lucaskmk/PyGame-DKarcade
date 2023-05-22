@@ -15,18 +15,18 @@ def game_over_message():
     text = font.render("Game Over - Press any key to restart", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
-
 # Reset the game state
 def reset_game():
     global game_over
     game_over = False
+    #=================================== | Posicoes do jogador apos respawn | =====================
     character.rect.x = 100
-    character.rect.y = 930
+    character.rect.y = (HEIGHT - 50 - 20)
     character.velocity = 0
     character.on_ground = False
     character.on_stair = False
     barrels.clear()
-# Class for platforms
+# ========================== | Class | =================================================================================================================================================
 class Platform:
     def __init__(self, x, y, width, height, color):
         self.rect = pygame.Rect(x, y, width, height)
@@ -34,8 +34,6 @@ class Platform:
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
-
-# Class for stairs
 class Stair:
     def __init__(self, x, y, width, height, color):
         self.rect = pygame.Rect(x, y, width, height)
@@ -183,7 +181,6 @@ for barrel in barrels:
 gravity = 0.6
 # Game loop
 
-# Game loop
 running = True
 clock = pygame.time.Clock()
 spawn_timer = 0
