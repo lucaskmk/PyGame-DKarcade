@@ -122,6 +122,9 @@ class Barrel:
         pygame.draw.rect(screen, self.color, self.rect)
 # ========================= | Objects | ================================================================================================================================================== 
 # (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
+
+for i in range(0,8):
+
 PLATFORM1 = Platform(0, 950, 800, 20, RED)
 PLATFORM2 = Platform(0, 950-150, 8000, 20, RED)
 PLATFORM3 = Platform(0, 950-300, 8000, 20, RED)
@@ -129,6 +132,8 @@ PLATFORM4 = Platform(0, 950-450, 8000, 20, RED)
 PLATFORM5 = Platform(0, 950-600, 8000, 20, RED)
 PLATFORM6 = Platform(0, 950-750, 8000, 20, RED)
 PLATFORM7 = Platform(200, 950-870, 200, 20, RED)
+
+
 STAIR1 = Stair(720, 950-150, 50, 150, WHITE)
 STAIR2 = Stair(30, 950-300, 50, 150, WHITE)
 STAIR3 = Stair(720, 950-450, 50, 150, WHITE)
