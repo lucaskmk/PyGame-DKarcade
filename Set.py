@@ -7,8 +7,22 @@ pygame.init()
 # Define colors
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
+
+#Define measures
+
 WIDTH = 1000
 HEIGHT = 780
+
+CHARACTER_X=100
+CHARACTER_Y=HEIGHT-50-20
+CHARACTER_WIDTH=20
+CHARACTER_HEIGHT=50
+
+
+
+#images
+
+
 
 def game_over_message():
     font = pygame.font.Font(None, 36)
@@ -99,11 +113,14 @@ class Character:
         if self.rect.top < 0:
             self.rect.top = 0
             self.velocity = 0
+
         # Deixar ele so dentro da tela
+
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
+
     def jump(self):
         if self.on_ground or self.on_stair:
             self.velocity = -self.jump_power
@@ -113,6 +130,7 @@ class Character:
         pygame.draw.rect(screen, self.color, self.rect)
 
 # Class for barrels
+
 class Barrel:
     def __init__(self, x, y, radius, color, speed):
         self.rect = pygame.Rect(x, y - radius, radius * 2, radius * 2)
@@ -131,6 +149,20 @@ class Barrel:
                 break
         else:
             self.y_velocity += gravity
+        
+
+        # Deixar ele so dentro da tela
+
+        if self.rect.x < 0:
+            self.rect.x = 0
+            barrel_speed=(-4)
+
+        if self.rect.x > WIDTH-20:
+            self.rect.x = WIDTH-20
+        
+
+
+        
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
@@ -159,17 +191,15 @@ for i in range(1,5):
 #stair6 = Stair(320, 950-870, 50, 120, WHITE)
 
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
-character = Character(100, (HEIGHT-50-20), 20, 50, WHITE)
+character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT, WHITE)
 # Create barrels
 barrels = []
 barrel_radius = 10
 barrel_speed = 4
-for platform in PLATFORMS:
-    x = random.randint(830, 1060)
-    y = platform.rect.top - barrel_radius
-    barrel = Barrel(x, y, barrel_radius, RED, barrel_speed)
-    barrels.append(barrel)
+
+
 # Check for collision between character and barrels
+
 for barrel in barrels:
     if character.rect.colliderect(barrel.rect):
         running = False  # Set running to False to end the game
@@ -178,14 +208,14 @@ for barrel in barrels:
 
 
 # Set gravity value
+
 gravity = 0.6
-# Game loop
 
 running = True
 clock = pygame.time.Clock()
 spawn_timer = 0
 spawn_interval = 90
-min_barrel_count = 2
+min_barrel_count = 10
 game_over = False
 while running:
     for event in pygame.event.get():
@@ -217,8 +247,8 @@ while running:
         spawn_timer += clock.get_rawtime()
         if spawn_timer >= spawn_interval:
             for platform in PLATFORMS:
-                x = random.randint(830, 1060)
-                y = platform.rect.top - barrel_radius
+                x = WIDTH-50
+                y = 150
                 barrel = Barrel(x, y, barrel_radius, RED, barrel_speed)
                 barrels.append(barrel)
             spawn_timer = 0
