@@ -15,9 +15,13 @@ HEIGHT = 780
 
 CHARACTER_X=100
 CHARACTER_Y=HEIGHT-50-20
-CHARACTER_WIDTH=20
+CHARACTER_WIDTH=40
 CHARACTER_HEIGHT=50
 
+# Set up display and initialize Pygame
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Donkey Kong Arcade")
 
 # Create barrels
 barrels = []
@@ -25,6 +29,8 @@ barrel_radius = 10
 barrel_speed = -4
 
 #images
+CHARACTER_IMG=pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
+CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
 
 
@@ -61,12 +67,12 @@ class Stair:
         pygame.draw.rect(screen, self.color, self.rect)
 
 # Class for the character
-class Character:
-    def __init__(self, x, y, width, height, color):
+class Character(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height,img):
+        self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
         self.velocity = 0
-        self.jump_power = 12
+        self.jump_power = 8
         self.on_ground = False
         self.on_stair = False
 
@@ -100,14 +106,17 @@ class Character:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.rect.x -= 3
+
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.rect.x += 3
+            self.image= pygame.image.load('imagens/sprite_mario_andando_direita.png').convert_alpha()
+            self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
         if self.on_stair:
             if keys[pygame.K_UP] or keys[pygame.K_w]:
-                self.rect.y -= 2
+                self.rect.y -= 1
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                self.rect.y += 2
+                self.rect.y += 1
 
         if self.rect.bottom > 950:
             self.rect.bottom = 950
@@ -118,7 +127,7 @@ class Character:
             self.rect.top = 0
             self.velocity = 0
 
-        # Deixar ele so dentro da tela
+        # Deixa ele so dentro da tela
 
         if self.rect.left < 0:
             self.rect.left = 0
@@ -166,16 +175,10 @@ class Barrel:
             self.speed = barrel_speed
         
 
-
-        
-
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
 
-# Set up display and initialize Pygame
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Donkey Kong Arcade")
 
 # ========================= | Objects | ================================================================================================================================================== 
 # (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
@@ -196,7 +199,7 @@ for i in range(1,5):
 #stair6 = Stair(320, 950-870, 50, 120, WHITE)
 
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
-character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT, WHITE)
+character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT,CHARACTER_IMG)
 
 # Check for collision between character and barrels
 
@@ -252,14 +255,14 @@ while running:
                 barrel = Barrel(x, y, barrel_radius, RED, barrel_speed)
                 barrels.append(barrel)
             spawn_timer = 0
-
         character.update()
-        character.draw(screen)
+        screen.blit(character.image, character.rect)
+
     else:
         game_over_message()
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(50)
 
 pygame.quit()
 
