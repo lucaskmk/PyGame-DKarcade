@@ -19,6 +19,10 @@ CHARACTER_WIDTH=20
 CHARACTER_HEIGHT=50
 
 
+# Create barrels
+barrels = []
+barrel_radius = 10
+barrel_speed = -4
 
 #images
 
@@ -139,7 +143,7 @@ class Barrel:
         self.y_velocity = 0
 
     def update(self):
-        self.rect.x -= self.speed
+        self.rect.x += self.speed
         self.rect.y += self.y_velocity
 
         for platform in PLATFORMS:
@@ -151,14 +155,15 @@ class Barrel:
             self.y_velocity += gravity
         
 
-        # Deixar ele so dentro da tela
+        # Deixa ele so dentro da tela
 
         if self.rect.x < 0:
             self.rect.x = 0
-            barrel_speed=(-4)
+            self.speed= barrel_speed * -1
 
         if self.rect.x > WIDTH-20:
             self.rect.x = WIDTH-20
+            self.speed = barrel_speed
         
 
 
@@ -192,11 +197,6 @@ for i in range(1,5):
 
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
 character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT, WHITE)
-# Create barrels
-barrels = []
-barrel_radius = 10
-barrel_speed = 4
-
 
 # Check for collision between character and barrels
 
