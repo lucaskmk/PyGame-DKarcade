@@ -101,6 +101,11 @@ class Character:
         if self.rect.top < 0:
             self.rect.top = 0
             self.velocity = 0
+        # Deixar ele so dentro da tela
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTHdd
 
     def jump(self):
         if self.on_ground or self.on_stair:
