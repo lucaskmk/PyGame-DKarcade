@@ -106,6 +106,8 @@ class Character(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.rect.x -= 3
+            self.image= pygame.image.load('imagens/sprite_mario_andando_esquerda.png').convert_alpha()
+            self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.rect.x += 3
@@ -212,13 +214,12 @@ for barrel in barrels:
 
 # Set gravity value
 
-gravity = 0.6
+gravity = 0.4
 
 running = True
 clock = pygame.time.Clock()
 spawn_timer = 0
-spawn_interval = 90
-min_barrel_count = 10
+spawn_interval = random.randint(100,150)
 game_over = False
 while running:
     for event in pygame.event.get():
@@ -255,6 +256,7 @@ while running:
                 barrel = Barrel(x, y, barrel_radius, RED, barrel_speed)
                 barrels.append(barrel)
             spawn_timer = 0
+
         character.update()
         screen.blit(character.image, character.rect)
 
