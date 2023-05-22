@@ -102,18 +102,40 @@ class Character(pygame.sprite.Sprite):
                 break
         else:
             self.on_stair = False
-
+        
+        LASTKEY = '0'
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.rect.x -= 3
             self.image= pygame.image.load('imagens/sprite_mario_andando_esquerda.png').convert_alpha()
             self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+            LASTKEY = 'left'
+        
 
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+
+        elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:   
             self.rect.x += 3
             self.image= pygame.image.load('imagens/sprite_mario_andando_direita.png').convert_alpha()
             self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+            LASTKEY = 'right'
 
+        else:
+            if LASTKEY == 'left':
+                self.speed = 0 
+                self.image= pygame.image.load('imagens/sprite_mario_esquerda.png').convert_alpha()
+                self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+            elif LASTKEY == 'right':
+                self.speed = 0 
+                self.image= pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
+                self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
+
+
+
+            
+
+
+        
         if self.on_stair:
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 self.rect.y -= 1
