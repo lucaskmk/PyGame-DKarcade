@@ -146,22 +146,18 @@ PLATFORMS=[plataforma_inicial]
 STAIRS=[]
 
 for i in range(1,5):
-
     if (-1)**i < 0:
         EIXO_X_PLATAFORMA = 0
         EIXO_X_ESCADA=WIDTH-70
-
     else:
         EIXO_X_PLATAFORMA=50
         EIXO_X_ESCADA=70
     PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i, WIDTH-40, 20, RED))
     STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-50)-150*i, 20, 150, WHITE))
-   
-
 #stair6 = Stair(320, 950-870, 50, 120, WHITE)
 
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
-character = Character(100, HEIGHT-50 - 20), 20, 50, WHITE)
+character = Character(100, (HEIGHT-50-20), 20, 50, WHITE)
 # Create barrels
 barrels = []
 barrel_radius = 10
