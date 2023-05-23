@@ -19,6 +19,13 @@ CHARACTER_Y=HEIGHT-50-20
 CHARACTER_WIDTH=40
 CHARACTER_HEIGHT=50
 
+
+PLATFORM_WIDTH=WIDTH-50
+PLATFORM_HEIGHT=20
+
+STAIR_WIDTH=20
+STAIR_HEIGHT=150
+
 # Set up display and initialize Pygame
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -26,14 +33,19 @@ pygame.display.set_caption("Donkey Kong Arcade")
 
 # Create barrels
 barrels = []
-barrel_radius = 10
+BARREL_RADIUS = 10
 barrel_speed = -4
 
 #images
 CHARACTER_IMG=pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
 CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
+BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (CHARACTER_WIDTH,CHARACTER_HEIGHT))
+STAIR_IMG=pygame.image.load('imagens/sprite_escadas.png').convert_alpha()
+STAIR_IMG=pygame.transform.scale(STAIR_IMG, (STAIR_WIDTH, STAIR_HEIGHT))
 
-
+PLATFORM_IMG=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
+PLATFORM_IMG=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH, PLATFORM_HEIGHT))
 
 def game_over_message():
     font = pygame.font.Font(None, 36)
@@ -53,15 +65,15 @@ def reset_game():
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
 class Platform:
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y, width, height, color,img):
+        self.image=img
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
 
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+
 class Stair:
-    def __init__(self, x, y, width, height, color):
-        self.rect = pygame.Rect(x, y, width, height)
+    def __init__(self, x, y, width, height, color,img):
+        self.rect = pygame.Rect(x, y, STAIR_WIDTH, STAIR_HEIGHT)
         self.color = color
 
     def draw(self, screen):
@@ -80,11 +92,13 @@ class Character(pygame.sprite.Sprite):
     
     
     def jump(self):
+
         now = pygame.time.get_ticks()
         ticks_decorridos = now - self.last_jump
         if ticks_decorridos > self.jump_ticks:
             self.velocity = -self.jump_power
             self.last_jump=now
+
     
 
     def update(self):
@@ -129,15 +143,6 @@ class Character(pygame.sprite.Sprite):
             self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
             LASTKEY = 'right'
 
-        else:
-            if LASTKEY == 'left':
-                self.speed = 0 
-                self.image= pygame.image.load('imagens/sprite_mario_esquerda.png').convert_alpha()
-                self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-            elif LASTKEY == 'right':
-                self.speed = 0 
-                self.image= pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
-                self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
 
         if self.on_stair:
@@ -173,9 +178,9 @@ class Character(pygame.sprite.Sprite):
 # Class for barrels
 
 class Barrel:
-    def __init__(self, x, y, radius, color, speed):
-        self.rect = pygame.Rect(x, y - radius, radius * 2, radius * 2)
-        self.color = color
+    def __init__(self, x, y, radius, speed,img):
+        self.image=img
+        self.rect = pygame.Rect(x, y-radius, radius * 2, radius * 2)
         self.speed = speed
         self.y_velocity = 0
 
@@ -203,15 +208,12 @@ class Barrel:
             self.speed = barrel_speed
         
 
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
-
 
 
 # ========================= | Objects | ================================================================================================================================================== 
 # (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
 # Create platforms
-plataforma_inicial=Platform(0,HEIGHT-50, WIDTH, 50, RED)
+plataforma_inicial=Platform(0,HEIGHT-50, WIDTH+200, 50, RED, PLATFORM_IMG)
 PLATFORMS=[plataforma_inicial]
 STAIRS=[]
 
@@ -222,8 +224,10 @@ for i in range(1,5):
     else:
         EIXO_X_PLATAFORMA=50
         EIXO_X_ESCADA=70
-    PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i, WIDTH-50, 20, RED))
-    STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-50)-150*i, 20, 150, WHITE))
+
+
+    PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i,  PLATFORM_WIDTH, PLATFORM_HEIGHT, RED, PLATFORM_IMG))
+    STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-50)-150*i,STAIR_WIDTH ,STAIR_HEIGHT , WHITE, STAIR_IMG))
 #stair6 = Stair(320, 950-870, 50, 120, WHITE)
 
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
@@ -255,7 +259,10 @@ while running:
             if game_over:
                 reset_game()
             elif event.key == pygame.K_SPACE:
+                CHARACTER_IMG= pygame.image.load('imagens/sprite_mario_pulando.png').convert_alpha()
+                CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT)) 
                 character.jump()
+ 
 
 
                 
@@ -264,7 +271,7 @@ while running:
     screen.fill((0, 0, 0))
 
     for platform in PLATFORMS:
-        platform.draw(screen)
+        screen.blit(platform.image, platform.rect)
 
     for stair in STAIRS:
         stair.draw(screen)
@@ -272,7 +279,7 @@ while running:
     if not game_over:
         for barrel in barrels:
             barrel.update()
-            barrel.draw(screen)
+            screen.blit(barrel.image, barrel.rect)
 
         for barrel in barrels:
             if character.rect.colliderect(barrel.rect):
@@ -283,7 +290,7 @@ while running:
             for platform in PLATFORMS:
                 x = WIDTH-50
                 y = 150
-                barrel = Barrel(x, y, barrel_radius, RED, barrel_speed)
+                barrel = Barrel(x, y, BARREL_RADIUS, barrel_speed, BARRIL_IMG)
                 barrels.append(barrel)
             spawn_timer = 0
 
