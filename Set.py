@@ -87,6 +87,7 @@ def reset_game():
     character.velocity = 0
     character.on_ground = False
     character.on_stair = False
+    spawn_interval = 100
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
 class Platform(pygame.sprite.Sprite):
@@ -121,9 +122,28 @@ class Character(pygame.sprite.Sprite):
             self.last_jump=now
             self.is_jumping = True  
     def update(self):
-        self.velocity += gravity
-        self.rect.y += self.velocity
 
+        keys = pygame.key.get_pressed()
+        for stair in STAIRS:
+            if self.rect.colliderect(stair.rect):
+                on_stair=True
+                if keys[pygame.K_UP] or keys[pygame.K_w]:
+                    self.rect.y-=7
+                elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                    self.rect.y+=7
+            else:
+                on_stair = False
+        if on_stair==True:
+            self.velocity=0
+            self.rect.y+=self.velocity
+        else:
+            self.velocity += gravity
+            self.rect.y += self.velocity
+
+
+
+
+            
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 if self.velocity > 0:
@@ -132,18 +152,8 @@ class Character(pygame.sprite.Sprite):
                 else:
                     self.rect.top = platform.rect.bottom
                     self.velocity = 0
-                break
-
-        for stair in STAIRS:
-            if self.rect.colliderect(stair.rect):
-                self.rect.bottom = stair.rect.top
-                self.velocity = 0
-                break
-        else:
-            self.on_stair = False
-            
+                break        
         
-        keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.rect.x -= 3
             self.image = pygame.image.load('imagens/sprite_mario_andando_esquerda.png').convert_alpha()
@@ -171,12 +181,7 @@ class Character(pygame.sprite.Sprite):
                 self.image = CHARACTER_STAND_IMG_LEFT
 
 
-    
-        if self.on_stair:
-            if keys[pygame.K_UP] or keys[pygame.K_w]:
-                self.rect.y -= 1
-            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                self.rect.y += 1
+            
 
         if self.rect.bottom > 950:
             self.rect.bottom = 950
@@ -265,8 +270,7 @@ gravity = 0.4
 
 running = True
 clock = pygame.time.Clock()
-spawn_timer = 0
-spawn_interval = 150
+spawn_interval = 100
 game_over = False
 
 
@@ -305,16 +309,16 @@ while running:
                 game_over = True
                 break
 
-        spawn_timer += clock.get_rawtime()
-
-        if spawn_timer >= spawn_interval:
+        tempo=pygame.time.get_ticks()
+        intervalo= tempo - spawn_interval
+        if intervalo >= spawn_interval :
+            spawn_interval=tempo
             x = WIDTH-50
             y = 150
             barrel = Barrel(x, y, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
             barrels.append(barrel)
-            spawn_timer = 0
-            
 
+            
 
 
         character.update()
