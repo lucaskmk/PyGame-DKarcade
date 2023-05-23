@@ -20,11 +20,15 @@ CHARACTER_WIDTH=40
 CHARACTER_HEIGHT=50
 
 
-PLATFORM_WIDTH=WIDTH-50
-PLATFORM_HEIGHT=20
+PLATFORM_WIDTH=WIDTH-60
+PLATFORM_HEIGHT=25
 
-STAIR_WIDTH=20
-STAIR_HEIGHT=150
+STAIR_WIDTH=30
+STAIR_HEIGHT=160
+
+DK_WIDTH=120
+DK_HEIGHT=120
+
 
 # Set up display and initialize Pygame
 
@@ -37,21 +41,28 @@ BARREL_RADIUS = 10
 barrel_speed = -4
 
 #images
+
 CHARACTER_IMG=pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
 CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (CHARACTER_WIDTH,CHARACTER_HEIGHT))
+
 STAIR_IMG=pygame.image.load('imagens/sprite_escadas.png').convert_alpha()
 STAIR_IMG=pygame.transform.scale(STAIR_IMG, (STAIR_WIDTH, STAIR_HEIGHT))
 
 PLATFORM_IMG=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
 PLATFORM_IMG=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH, PLATFORM_HEIGHT))
 
+DK_IMG=pygame.image.load('imagens/sprite_DK_barril.png').convert_alpha()
+DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH, DK_HEIGHT))
+
 def game_over_message():
     font = pygame.font.Font(None, 36)
     text = font.render("Game Over - Press any key to restart", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
+
 # Reset the game state
 def reset_game():
     global game_over
@@ -64,20 +75,17 @@ def reset_game():
     character.on_stair = False
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
-class Platform:
-    def __init__(self, x, y, width, height, color,img):
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, img):
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
 
 
-class Stair:
-    def __init__(self, x, y, width, height, color,img):
-        self.rect = pygame.Rect(x, y, STAIR_WIDTH, STAIR_HEIGHT)
-        self.color = color
+class Stair(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, img):
+        self.image=img
+        self.rect = pygame.Rect(x, y, width, height)
 
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
 
 # Class for the character
 class Character(pygame.sprite.Sprite):
@@ -167,17 +175,15 @@ class Character(pygame.sprite.Sprite):
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
 
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, img):
+        self.image=img
+        self.rect = pygame.Rect(x, y, width, height)
 
-
-
-
-
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
 
 # Class for barrels
 
-class Barrel:
+class Barrel(pygame.sprite.Sprite):
     def __init__(self, x, y, radius, speed,img):
         self.image=img
         self.rect = pygame.Rect(x, y-radius, radius * 2, radius * 2)
@@ -213,7 +219,7 @@ class Barrel:
 # ========================= | Objects | ================================================================================================================================================== 
 # (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
 # Create platforms
-plataforma_inicial=Platform(0,HEIGHT-50, WIDTH+200, 50, RED, PLATFORM_IMG)
+plataforma_inicial=Platform(0,HEIGHT-50, WIDTH, 50, PLATFORM_IMG)
 PLATFORMS=[plataforma_inicial]
 STAIRS=[]
 
@@ -226,23 +232,14 @@ for i in range(1,5):
         EIXO_X_ESCADA=70
 
 
-    PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i,  PLATFORM_WIDTH, PLATFORM_HEIGHT, RED, PLATFORM_IMG))
-    STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-50)-150*i,STAIR_WIDTH ,STAIR_HEIGHT , WHITE, STAIR_IMG))
+    PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i,  PLATFORM_WIDTH, PLATFORM_HEIGHT, PLATFORM_IMG))
+    STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-50)-150*i, STAIR_WIDTH ,STAIR_HEIGHT , STAIR_IMG))
 #stair6 = Stair(320, 950-870, 50, 120, WHITE)
 
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
 character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT,CHARACTER_IMG)
+DK= Enemy( WIDTH-(DK_WIDTH+20) , 20 ,DK_WIDTH, DK_HEIGHT, DK_IMG)
 
-# Check for collision between character and barrels
-
-for barrel in barrels:
-    if character.rect.colliderect(barrel.rect):
-        running = False  # Set running to False to end the game
-        break
-
-
-
-# Set gravity value
 
 gravity = 0.4
 
@@ -251,6 +248,8 @@ clock = pygame.time.Clock()
 spawn_timer = 0
 spawn_interval = 150
 game_over = False
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -264,17 +263,13 @@ while running:
                 character.jump()
  
 
-
-                
-
-
     screen.fill((0, 0, 0))
 
     for platform in PLATFORMS:
         screen.blit(platform.image, platform.rect)
 
     for stair in STAIRS:
-        stair.draw(screen)
+        screen.blit(stair.image, stair.rect)
 
     if not game_over:
         for barrel in barrels:
@@ -285,17 +280,22 @@ while running:
             if character.rect.colliderect(barrel.rect):
                 game_over = True
                 break
+
         spawn_timer += clock.get_rawtime()
+
         if spawn_timer >= spawn_interval:
-            for platform in PLATFORMS:
-                x = WIDTH-50
-                y = 150
-                barrel = Barrel(x, y, BARREL_RADIUS, barrel_speed, BARRIL_IMG)
-                barrels.append(barrel)
+            x = WIDTH-50
+            y = 150
+            barrel = Barrel(x, y, BARREL_RADIUS, barrel_speed, BARRIL_IMG)
+            barrels.append(barrel)
             spawn_timer = 0
+
+
 
         character.update()
         screen.blit(character.image, character.rect)
+        DK.update()
+        screen.blit(DK.image, DK.rect)
 
     else:
         game_over_message()
