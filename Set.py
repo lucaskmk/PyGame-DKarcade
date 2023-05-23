@@ -45,6 +45,10 @@ barrel_speed = -4
 CHARACTER_IMG=pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
 CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
+CHARACTER_STANDING_IMG = pygame.image.load('imagens\sprite_mario_direita.png').convert_alpha()
+CHARACTER_STANDING_IMG = pygame.transform.scale(CHARACTER_STANDING_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
+
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (CHARACTER_WIDTH,CHARACTER_HEIGHT))
 
@@ -100,7 +104,6 @@ class Character(pygame.sprite.Sprite):
     
     
     def jump(self):
-
         now = pygame.time.get_ticks()
         ticks_decorridos = now - self.last_jump
         if ticks_decorridos > self.jump_ticks:
@@ -150,7 +153,9 @@ class Character(pygame.sprite.Sprite):
             self.image= pygame.image.load('imagens/sprite_mario_andando_direita.png').convert_alpha()
             self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
             LASTKEY = 'right'
-
+            
+        if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_a] and not keys[pygame.K_d]:
+            self.image = CHARACTER_STANDING_IMG
 
 
         if self.on_stair:
