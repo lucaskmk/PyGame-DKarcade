@@ -29,6 +29,10 @@ STAIR_HEIGHT=130
 DK_WIDTH=120
 DK_HEIGHT=120
 
+barrels = []
+BARREL_WIDTH = 30
+BARREL_HEIGHT = 30
+
 
 # Set up display and initialize Pygame
 
@@ -36,9 +40,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Donkey Kong Arcade")
 
 # Create barrels
-barrels = []
-BARREL_RADIUS = 10
-barrel_speed = -4
+
 
 #images
 
@@ -55,7 +57,7 @@ CHARACTER_JUMPING_IMG_LEFT = pygame.image.load('imagens\sprite_mario_pulando_ESQ
 CHARACTER_JUMPING_IMG_LEFT = pygame.transform.scale(CHARACTER_JUMPING_IMG_LEFT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
-BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (CHARACTER_WIDTH,CHARACTER_HEIGHT))
+BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
 
 STAIR_IMG=pygame.image.load('imagens/sprite_escadas.png').convert_alpha()
 STAIR_IMG=pygame.transform.scale(STAIR_IMG, (STAIR_WIDTH, STAIR_HEIGHT))
@@ -110,6 +112,7 @@ class Character(pygame.sprite.Sprite):
         self.jump_ticks = 700
         self.is_jumping = False
         self.last_key = 'right' 
+
     def jump(self):
         now = pygame.time.get_ticks()
         ticks_decorridos = now - self.last_jump
@@ -120,24 +123,21 @@ class Character(pygame.sprite.Sprite):
     def update(self):
         self.velocity += gravity
         self.rect.y += self.velocity
+
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 if self.velocity > 0:
                     self.rect.bottom = platform.rect.top
                     self.velocity = 0
-                    self.on_ground = True
                 else:
                     self.rect.top = platform.rect.bottom
                     self.velocity = 0
                 break
-        else:
-            self.on_ground = False
+
         for stair in STAIRS:
             if self.rect.colliderect(stair.rect):
                 self.rect.bottom = stair.rect.top
                 self.velocity = 0
-                self.on_ground = True
-                self.on_stair = True
                 break
         else:
             self.on_stair = False
@@ -164,7 +164,7 @@ class Character(pygame.sprite.Sprite):
             self.is_jumping = False
 
         # IMAGEM PARADO
-        if self.on_ground and not (keys[pygame.K_LEFT] or keys[pygame.K_a] or keys[pygame.K_RIGHT] or keys[pygame.K_d]):
+        if not (keys[pygame.K_LEFT] or keys[pygame.K_a] or keys[pygame.K_RIGHT] or keys[pygame.K_d]):
             if self.last_key == 'right':
                 self.image = CHARACTER_STAND_IMG_RIGHT
             elif self.last_key == 'left':
@@ -203,10 +203,10 @@ class Enemy(pygame.sprite.Sprite):
 # Class for barrels
 
 class Barrel(pygame.sprite.Sprite):
-    def __init__(self, x, y, radius, speed,img):
+    def __init__(self, x, y,width, height, img):
         self.image=img
-        self.rect = pygame.Rect(x, y-radius, radius * 2, radius * 2)
-        self.speed = speed
+        self.rect = pygame.Rect(x, y, width, height)
+        self.speed =-4
         self.y_velocity = 0
 
     def update(self):
@@ -220,17 +220,18 @@ class Barrel(pygame.sprite.Sprite):
                 break
         else:
             self.y_velocity += gravity
+
         
 
         # Deixa ele so dentro da tela
 
         if self.rect.x < 0:
             self.rect.x = 0
-            self.speed= barrel_speed * -1
+            self.speed= 4
 
         if self.rect.x > WIDTH-20:
             self.rect.x = WIDTH-20
-            self.speed = barrel_speed
+            self.speed = -4
         
 
 
@@ -245,10 +246,10 @@ STAIRS=[]
 for i in range(1,5):
     if (-1)**i < 0:
         EIXO_X_PLATAFORMA = 0
-        EIXO_X_ESCADA=WIDTH-80
+        EIXO_X_ESCADA=WIDTH-100
     else:
-        EIXO_X_PLATAFORMA=50
-        EIXO_X_ESCADA=70
+        EIXO_X_PLATAFORMA=70
+        EIXO_X_ESCADA=80
 
 
     PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i,  PLATFORM_WIDTH, PLATFORM_HEIGHT, PLATFORM_IMG))
@@ -298,6 +299,7 @@ while running:
             barrel.update()
             screen.blit(barrel.image, barrel.rect)
 
+
         for barrel in barrels:
             if character.rect.colliderect(barrel.rect):
                 game_over = True
@@ -308,9 +310,10 @@ while running:
         if spawn_timer >= spawn_interval:
             x = WIDTH-50
             y = 150
-            barrel = Barrel(x, y, BARREL_RADIUS, barrel_speed, BARRIL_IMG)
+            barrel = Barrel(x, y, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
             barrels.append(barrel)
             spawn_timer = 0
+            
 
 
 
