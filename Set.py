@@ -21,10 +21,10 @@ CHARACTER_HEIGHT=50
 
 
 PLATFORM_WIDTH=WIDTH-60
-PLATFORM_HEIGHT=25
+PLATFORM_HEIGHT=30
 
 STAIR_WIDTH=30
-STAIR_HEIGHT=160
+STAIR_HEIGHT=130
 
 DK_WIDTH=120
 DK_HEIGHT=120
@@ -53,6 +53,9 @@ STAIR_IMG=pygame.transform.scale(STAIR_IMG, (STAIR_WIDTH, STAIR_HEIGHT))
 
 PLATFORM_IMG=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
 PLATFORM_IMG=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH, PLATFORM_HEIGHT))
+
+PLATFORM_IMG_i=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
+PLATFORM_IMG_i=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH+70, PLATFORM_HEIGHT+15))
 
 DK_IMG=pygame.image.load('imagens/sprite_DK_barril.png').convert_alpha()
 DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH, DK_HEIGHT))
@@ -219,7 +222,7 @@ class Barrel(pygame.sprite.Sprite):
 # ========================= | Objects | ================================================================================================================================================== 
 # (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
 # Create platforms
-plataforma_inicial=Platform(0,HEIGHT-50, WIDTH, 50, PLATFORM_IMG)
+plataforma_inicial=Platform(0,HEIGHT-50, WIDTH, 50, PLATFORM_IMG_i)
 PLATFORMS=[plataforma_inicial]
 STAIRS=[]
 
@@ -233,7 +236,7 @@ for i in range(1,5):
 
 
     PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i,  PLATFORM_WIDTH, PLATFORM_HEIGHT, PLATFORM_IMG))
-    STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-50)-150*i, STAIR_WIDTH ,STAIR_HEIGHT , STAIR_IMG))
+    STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-30)-150*i, STAIR_WIDTH ,STAIR_HEIGHT , STAIR_IMG))
 #stair6 = Stair(320, 950-870, 50, 120, WHITE)
 
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
@@ -265,11 +268,13 @@ while running:
 
     screen.fill((0, 0, 0))
 
+    for stair in STAIRS:
+        screen.blit(stair.image, stair.rect)
+
     for platform in PLATFORMS:
         screen.blit(platform.image, platform.rect)
 
-    for stair in STAIRS:
-        screen.blit(stair.image, stair.rect)
+
 
     if not game_over:
         for barrel in barrels:
