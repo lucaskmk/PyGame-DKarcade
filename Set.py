@@ -69,8 +69,18 @@ CHARACTER_IMG_DOWN =  pygame.transform.scale(CHARACTER_IMG_DOWN, (CHARACTER_WIDT
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
 
+BARRIL_IMG_D_BAIXO=pygame.image.load('imagens/sprite_barril_direita_baixo.png').convert_alpha()
+BARRIL_IMG_D_BAIXO=pygame.transform.scale(BARRIL_IMG_D_BAIXO, (BARREL_WIDTH,BARREL_HEIGHT))
+
+BARRIL_IMG_D_CIMA=pygame.image.load('imagens/sprite_barril_direita_cima.png').convert_alpha()
+BARRIL_IMG_D_CIMA=pygame.transform.scale(BARRIL_IMG_D_CIMA, (BARREL_WIDTH,BARREL_HEIGHT))
+
+BARRIL_IMG_E_BAIXO=pygame.image.load('imagens/sprite_barril_esquerda_baixo.png').convert_alpha()
+BARRIL_IMG_E_BAIXO=pygame.transform.scale(BARRIL_IMG_E_BAIXO, (BARREL_WIDTH,BARREL_HEIGHT))
+
 STAIR_IMG=pygame.image.load('imagens/sprite_escadas.png').convert_alpha()
 STAIR_IMG=pygame.transform.scale(STAIR_IMG, (STAIR_WIDTH, STAIR_HEIGHT))
+
 
 PLATFORM_IMG=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
 PLATFORM_IMG=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH, PLATFORM_HEIGHT))
@@ -81,8 +91,14 @@ PLATFORM_IMG_i=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH+70, PLATFORM
 FOGO_IMG = pygame.image.load('imagens/sprite_fire.png').convert_alpha()
 FOGO_IMG = pygame.transform.scale(FOGO_IMG, ( FOGO_WIDTH, FOGO_HEIGHT))
 
+FOGO_IMG2 = pygame.image.load('imagens/sprite_fogo2.png').convert_alpha()
+FOGO_IMG2 = pygame.transform.scale(FOGO_IMG2, ( FOGO_WIDTH, FOGO_HEIGHT))
+
+
+
+
 DK_IMG=pygame.image.load('imagens/sprite_dk_jogando.png').convert_alpha()
-DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH, DK_HEIGHT))
+DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH-10, DK_HEIGHT-10))
 
 DK_IMG_DIREITA=pygame.image.load('imagens/sprite_dk_bravo_direita.png').convert_alpha()
 DK_IMG_DIREITA=pygame.transform.scale(DK_IMG_DIREITA, (DK_WIDTH, DK_HEIGHT))
@@ -286,7 +302,16 @@ class fogo(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-    
+        self.image_list = [FOGO_IMG, FOGO_IMG2]
+        self.i=0
+        self.ultima_i=0
+    def update(self):
+        agora=pygame.time.get_ticks()
+        if agora-self.ultima_i>=300:
+            self.i+=1
+            self.image=self.image_list[self.i % 2]
+            self.ultima_i=agora
+
 # Class for barrels
 
 class Barrel(pygame.sprite.Sprite):
@@ -299,9 +324,24 @@ class Barrel(pygame.sprite.Sprite):
         self.speed =-4
         self.y_velocity = 0
 
+
+        self.i=0
+        self.ultima_i=0
+
     def update(self):
         self.rect.x += self.speed
         self.rect.y += self.y_velocity
+        agora=pygame.time.get_ticks()
+        if agora-self.ultima_i>=250:
+            if self.speed<0:
+                self.image_list = [BARRIL_IMG,  BARRIL_IMG_E_BAIXO, BARRIL_IMG_D_BAIXO, BARRIL_IMG_D_CIMA]
+            if self.speed>0:
+                self.image_list = [BARRIL_IMG, BARRIL_IMG_D_CIMA, BARRIL_IMG_D_BAIXO, BARRIL_IMG_E_BAIXO]
+
+            self.i+=1
+            self.image=self.image_list[self.i % 4]
+            self.ultima_i=agora
+
 
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
@@ -364,7 +404,7 @@ gravity = 0.4
 
 running = True
 clock = pygame.time.Clock()
-spawn_interval = random.randint(2000, 2500)
+
 ultimo_barril= 0
 game_over = False
 
@@ -384,6 +424,7 @@ while running:
     screen.fill((0, 0, 0))
 
     for stair in STAIRS:
+        STAIR_IMG = pygame.Surface.set_colorkey(stair.image, (0,0,0))
         screen.blit(stair.image, stair.rect)
 
     for platform in PLATFORMS:
@@ -404,6 +445,7 @@ while running:
             if fogo.rect.colliderect(barrel.rect):
                 barrel.kill()
 
+        spawn_interval = random.randint(2000, 3500)
         tempo=pygame.time.get_ticks()
         intervalo= tempo - ultimo_barril
 
@@ -432,6 +474,9 @@ while running:
 
     pygame.display.flip()
     clock.tick(50)
+
+
+
 
 pygame.quit()
 
