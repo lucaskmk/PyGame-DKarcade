@@ -226,7 +226,7 @@ class Character(pygame.sprite.Sprite):
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, img):
-        pygame.sprite.Sprite.__init__(self)        
+        pygame.sprite.Sprite.__init__(self)       
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
         self.image_list = [DK_IMG,DK_IMG_DIREITA,DK_IMG_ESQUERDA]
@@ -234,10 +234,9 @@ class Enemy(pygame.sprite.Sprite):
         self.ultima_i=0
     def update(self):
         agora=pygame.time.get_ticks()
-        if agora-self.ultima_i>=500:
+        if agora-self.ultima_i>=700:
             self.i+=1
             self.image=self.image_list[self.i % 3]
-            print(self.i % 3)
             self.ultima_i=agora
 
 
@@ -318,7 +317,7 @@ gravity = 0.4
 
 running = True
 clock = pygame.time.Clock()
-spawn_interval = 1000
+spawn_interval = 2000
 ultimo_barril= 0
 game_over = False
 
@@ -362,7 +361,8 @@ while running:
         intervalo= tempo - ultimo_barril
 
         if intervalo >= spawn_interval:
-            DK.image= DK_IMG
+            DK.i=0
+
             ultimo_barril=tempo
             x = WIDTH-50
             y = 150
