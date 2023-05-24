@@ -45,6 +45,15 @@ barrel_speed = -4
 CHARACTER_IMG=pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
 CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
+CHARACTER_STAND_IMG_RIGHT = pygame.image.load('imagens\sprite_mario_direita.png').convert_alpha()
+CHARACTER_STAND_IMG_RIGHT = pygame.transform.scale(CHARACTER_STAND_IMG_RIGHT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_STAND_IMG_LEFT = pygame.image.load('imagens\sprite_mario_esquerda.png').convert_alpha()
+CHARACTER_STAND_IMG_LEFT = pygame.transform.scale(CHARACTER_STAND_IMG_LEFT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_JUMPING_IMG_RIGHT = pygame.image.load('imagens\sprite_mario_pulando.png').convert_alpha()
+CHARACTER_JUMPING_IMG_RIGHT = pygame.transform.scale(CHARACTER_JUMPING_IMG_RIGHT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_JUMPING_IMG_LEFT = pygame.image.load('imagens\sprite_mario_pulando_ESQUERDA.png').convert_alpha()
+CHARACTER_JUMPING_IMG_LEFT = pygame.transform.scale(CHARACTER_JUMPING_IMG_LEFT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (CHARACTER_WIDTH,CHARACTER_HEIGHT))
 
@@ -94,25 +103,20 @@ class Character(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, width, height)
         self.velocity = 0
         self.jump_power = 8
-
         self.last_jump = pygame.time.get_ticks()
         self.jump_ticks = 700
-    
-    
+        self.is_jumping = False
+        self.last_key = 'right' 
     def jump(self):
-
         now = pygame.time.get_ticks()
         ticks_decorridos = now - self.last_jump
         if ticks_decorridos > self.jump_ticks:
             self.velocity = -self.jump_power
             self.last_jump=now
-
-    
-
+            self.is_jumping = True  
     def update(self):
         self.velocity += gravity
         self.rect.y += self.velocity
-
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 if self.velocity > 0:
@@ -125,7 +129,6 @@ class Character(pygame.sprite.Sprite):
                 break
         else:
             self.on_ground = False
-
         for stair in STAIRS:
             if self.rect.colliderect(stair.rect):
                 self.rect.bottom = stair.rect.top
@@ -135,24 +138,33 @@ class Character(pygame.sprite.Sprite):
                 break
         else:
             self.on_stair = False
+            
         
-        LASTKEY = '0'
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.rect.x -= 3
-            self.image= pygame.image.load('imagens/sprite_mario_andando_esquerda.png').convert_alpha()
-            self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-            LASTKEY = 'left'
-
-
-        elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:   
+            self.image = pygame.image.load('imagens/sprite_mario_andando_esquerda.png').convert_alpha()
+            self.image = pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+            self.last_key = 'left'
+        elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.rect.x += 3
-            self.image= pygame.image.load('imagens/sprite_mario_andando_direita.png').convert_alpha()
-            self.image=pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-            LASTKEY = 'right'
-
-
-
+            self.image = pygame.image.load('imagens/sprite_mario_andando_direita.png').convert_alpha()
+            self.image = pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+            self.last_key = 'right'
+        # IMAGEM PARADO
+        if self.on_ground and not (keys[pygame.K_LEFT] or keys[pygame.K_a] or keys[pygame.K_RIGHT] or keys[pygame.K_d]):
+            if self.last_key == 'right':
+                self.image = CHARACTER_STAND_IMG_RIGHT
+            elif self.last_key == 'left':
+                self.image = CHARACTER_STAND_IMG_LEFT
+        # IMAGEM SALTANDO
+        if self.is_jumping:
+            if self.last_key == 'right':
+                self.image = CHARACTER_JUMPING_IMG_RIGHT
+            elif self.last_key == 'left':
+                self.image = CHARACTER_JUMPING_IMG_LEFT
+            self.is_jumping = False
+    
         if self.on_stair:
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 self.rect.y -= 1
@@ -261,6 +273,7 @@ while running:
                 CHARACTER_IMG= pygame.image.load('imagens/sprite_mario_pulando.png').convert_alpha()
                 CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT)) 
                 character.jump()
+                
  
 
     screen.fill((0, 0, 0))
@@ -304,4 +317,5 @@ while running:
     clock.tick(50)
 
 pygame.quit()
+
 

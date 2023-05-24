@@ -102,7 +102,7 @@ class Stair(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, width, height)
 
 
-# Class for the character
+# Class for the character ============================================================================
 class Character(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height,img):
         self.image=img
@@ -127,18 +127,18 @@ class Character(pygame.sprite.Sprite):
         for stair in STAIRS:
             if self.rect.colliderect(stair.rect):
                 on_stair=True
+                self.velocity=0
+                self.rect.y+=self.velocity
                 if keys[pygame.K_UP] or keys[pygame.K_w]:
                     self.rect.y-=7
                 elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
                     self.rect.y+=7
             else:
                 on_stair = False
-        if on_stair==True:
-            self.velocity=0
-            self.rect.y+=self.velocity
-        else:
+        if on_stair==False:
             self.velocity += gravity
             self.rect.y += self.velocity
+            
 
 
 
@@ -171,10 +171,9 @@ class Character(pygame.sprite.Sprite):
                 self.image = CHARACTER_JUMPING_IMG_RIGHT
             elif self.last_key == 'left':
                 self.image = CHARACTER_JUMPING_IMG_LEFT
-            self.is_jumping = False
-
+            
         # IMAGEM PARADO
-        if not (keys[pygame.K_LEFT] or keys[pygame.K_a] or keys[pygame.K_RIGHT] or keys[pygame.K_d]):
+        elif not (keys[pygame.K_LEFT] or keys[pygame.K_a] or keys[pygame.K_RIGHT] or keys[pygame.K_d]):
             if self.last_key == 'right':
                 self.image = CHARACTER_STAND_IMG_RIGHT
             elif self.last_key == 'left':
