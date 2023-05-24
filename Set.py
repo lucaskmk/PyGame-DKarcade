@@ -304,7 +304,10 @@ for i in range(1,6):
 
 
     PLATFORMS.append(Platform(EIXO_X_PLATAFORMA, (HEIGHT-50)-150*i,  PLATFORM_WIDTH, PLATFORM_HEIGHT, PLATFORM_IMG))
-    STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-30)-150*i, STAIR_WIDTH ,STAIR_HEIGHT , STAIR_IMG))
+    if i == 5 :
+        STAIRS.append(Stair(EIXO_X_ESCADA-80, (HEIGHT-30)-150*i, STAIR_WIDTH ,STAIR_HEIGHT , STAIR_IMG))
+    else:
+        STAIRS.append(Stair(EIXO_X_ESCADA, (HEIGHT-30)-150*i, STAIR_WIDTH ,STAIR_HEIGHT , STAIR_IMG))
 #stair6 = Stair(320, 950-870, 50, 120, WHITE)
 
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
@@ -385,7 +388,7 @@ while running:
         game_over_message()
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(50)
 
 pygame.quit()
 
