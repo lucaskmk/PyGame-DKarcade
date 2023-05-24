@@ -29,14 +29,15 @@ STAIR_HEIGHT=145
 DK_WIDTH=120
 DK_HEIGHT=120
 
-FOGO_HEIGHT = 100
+FOGO_HEIGHT = 90
 FOGO_WIDTH = 50
 
 barrels = []
 BARREL_WIDTH = 30
 BARREL_HEIGHT = 30
 
-
+MARTELO_WIDTH= 30
+MARTELO_HEIGHT=30
 # Set up display and initialize Pygame
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -96,8 +97,8 @@ FOGO_IMG = pygame.transform.scale(FOGO_IMG, ( FOGO_WIDTH, FOGO_HEIGHT))
 FOGO_IMG2 = pygame.image.load('imagens/sprite_fogo2.png').convert_alpha()
 FOGO_IMG2 = pygame.transform.scale(FOGO_IMG2, ( FOGO_WIDTH, FOGO_HEIGHT))
 
-
-
+FOGO_IMG3 = pygame.image.load('imagens/sprite_fogo3.png').convert_alpha()
+FOGO_IMG3 = pygame.transform.scale(FOGO_IMG3, ( FOGO_WIDTH, FOGO_HEIGHT))
 
 DK_IMG=pygame.image.load('imagens/sprite_dk_jogando.png').convert_alpha()
 DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH-10, DK_HEIGHT-10))
@@ -107,6 +108,9 @@ DK_IMG_DIREITA=pygame.transform.scale(DK_IMG_DIREITA, (DK_WIDTH, DK_HEIGHT))
 
 DK_IMG_ESQUERDA=pygame.image.load('imagens/sprite_dk_bravo_esquerda.png').convert_alpha()
 DK_IMG_ESQUERDA=pygame.transform.scale(DK_IMG_ESQUERDA, (DK_WIDTH, DK_HEIGHT))
+
+MARTELO_IMG=pygame.image.load('imagens/sprite_martelo.png').convert_alpha()
+MARTELO_IMG=pygame.transform.scale(MARTELO_IMG, (MARTELO_WIDTH, MARTELO_HEIGHT))
 
 def game_over_message():
     font = pygame.font.Font(None, 36)
@@ -304,14 +308,14 @@ class fogo(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-        self.image_list = [FOGO_IMG, FOGO_IMG2]
+        self.image_list = [FOGO_IMG3, FOGO_IMG, FOGO_IMG2]
         self.i=0
         self.ultima_i=0
     def update(self):
         agora=pygame.time.get_ticks()
-        if agora-self.ultima_i>=300:
+        if agora-self.ultima_i>=500:
             self.i+=1
-            self.image=self.image_list[self.i % 2]
+            self.image=self.image_list[self.i % 3]
             self.ultima_i=agora
 
 # Class for barrels
@@ -374,6 +378,13 @@ class Barrel(pygame.sprite.Sprite):
             self.y_velocity = 0
             self.speed = 0
 
+class Martelo(pygame.sprite.Sprite):
+    def __init__(self, x, y,width, height, img):
+
+        pygame.sprite.Sprite.__init__(self)      
+        self.image=img
+        self.rect = pygame.Rect(x, y, width, height)
+
 
 
 # ========================= | Objects | ================================================================================================================================================== 
@@ -403,7 +414,7 @@ for i in range(1,6):
 character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT,CHARACTER_IMG)
 DK= Enemy( WIDTH-(DK_WIDTH+20) , 20 ,DK_WIDTH, DK_HEIGHT, DK_IMG)
 fogo = fogo (CHARACTER_X-60, CHARACTER_Y-70 ,FOGO_WIDTH, FOGO_HEIGHT, FOGO_IMG)
-
+martelo = Martelo(820, 470, MARTELO_WIDTH, MARTELO_HEIGHT, MARTELO_IMG)
 
 gravity = 0.4
 
@@ -473,6 +484,9 @@ while running:
 
         fogo.update()
         screen.blit(fogo.image, fogo.rect)
+
+        martelo.update
+        screen.blit(martelo.image, martelo.rect)
 
     else:
         game_over_message()
