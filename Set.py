@@ -33,8 +33,8 @@ FOGO_HEIGHT = 90
 FOGO_WIDTH = 50
 
 barrels = []
-BARREL_WIDTH = 30
-BARREL_HEIGHT = 30
+BARREL_WIDTH = 33
+BARREL_HEIGHT = 33
 
 MARTELO_WIDTH= 30
 MARTELO_HEIGHT=30
@@ -167,6 +167,9 @@ class Character(pygame.sprite.Sprite):
             self.velocity = -self.jump_power
             self.last_jump=now
             self.is_jumping = True  
+    
+
+
 
     def update(self):
 
@@ -282,6 +285,10 @@ class Character(pygame.sprite.Sprite):
             self.rect.left = 0
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
+
+        
+        
+        
 #=============================================================================================
 # Class for DK
 
@@ -373,7 +380,7 @@ class Barrel(pygame.sprite.Sprite):
             self.image= BARRIL_explode
         if (self.rect.x <= 2) and (self.rect.y >= CHARACTER_Y-70 ):
             self.velocity=0
-            self.rect.x = 0
+            self.rect.x = -10
             self.rect.y = 10000000
             self.y_velocity = 0
             self.speed = 0
@@ -415,7 +422,8 @@ character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT,C
 DK= Enemy( WIDTH-(DK_WIDTH+20) , 20 ,DK_WIDTH, DK_HEIGHT, DK_IMG)
 fogo = fogo (CHARACTER_X-60, CHARACTER_Y-70 ,FOGO_WIDTH, FOGO_HEIGHT, FOGO_IMG)
 martelo = Martelo(820, 470, MARTELO_WIDTH, MARTELO_HEIGHT, MARTELO_IMG)
-
+listamartelo=pygame.sprite.Group()
+listamartelo.add(martelo)
 gravity = 0.4
 
 running = True
@@ -468,14 +476,16 @@ while running:
         if intervalo >= spawn_interval:
             DK.i=0
             ultimo_barril=tempo
-            x = WIDTH-110
+            x = WIDTH-160
             y = 150
             barrel = Barrel(x, y, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
             barrels.append(barrel)
 
             
 
-
+        if character.rect.colliderect(martelo.rect):
+                    print('ffsf')
+                    del martelo
         character.update()
         screen.blit(character.image, character.rect)
 
@@ -485,8 +495,8 @@ while running:
         fogo.update()
         screen.blit(fogo.image, fogo.rect)
 
-        martelo.update
-        screen.blit(martelo.image, martelo.rect)
+        martelo.update()
+        listamartelo.draw(screen)
 
     else:
         game_over_message()
