@@ -168,7 +168,7 @@ class Character(pygame.sprite.Sprite):
                 
                 on_stair = False
 
-        if self.on_stair:
+        if self.on_stair: # se na escada so desenho da escada
             # Imagem escada
             if self.lastupdown_key == 'up' :
                 self.image = CHARACTER_IMG_UP
@@ -180,7 +180,7 @@ class Character(pygame.sprite.Sprite):
             elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 self.rect.x += 3
                 self.last_key = 'right'
-        else:
+        else: # se n faz td
             if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 self.rect.x -= 3
                 self.image = pygame.image.load('imagens/sprite_mario_andando_esquerda.png').convert_alpha()
@@ -216,6 +216,11 @@ class Character(pygame.sprite.Sprite):
                         self.image = CHARACTER_STAND_IMG_RIGHT
                     elif self.last_key == 'left':
                         self.image = CHARACTER_STAND_IMG_LEFT
+                    if self.is_jumping: # IMAGEM SALTANDO se tambem parado
+                        if self.last_key == 'right':
+                            self.image = CHARACTER_JUMPING_IMG_RIGHT
+                        elif self.last_key == 'left':
+                            self.image = CHARACTER_JUMPING_IMG_LEFT 
             
         if on_stair==False:
             self.velocity += gravity
@@ -281,7 +286,7 @@ class fogo(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-
+    
 # Class for barrels
 
 class Barrel(pygame.sprite.Sprite):
@@ -318,7 +323,12 @@ class Barrel(pygame.sprite.Sprite):
             self.rect.x = WIDTH-20
             self.speed = -4
         
-
+        if self.rect.colliderect(fogo.rect):
+            self.velocity=0
+            self.rect.x = 0
+            self.rect.y = 0
+            self.y_velocity = 0
+            self.speed = 0
 
 
 # ========================= | Objects | ================================================================================================================================================== 
