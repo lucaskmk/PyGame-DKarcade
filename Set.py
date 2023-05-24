@@ -140,10 +140,6 @@ class Character(pygame.sprite.Sprite):
             self.rect.y += self.velocity
             
 
-
-
-
-            
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 if self.velocity > 0:
@@ -152,6 +148,7 @@ class Character(pygame.sprite.Sprite):
                 else:
                     self.rect.top = platform.rect.bottom
                     self.velocity = 0
+                self.is_jumping = False
                 break        
         
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
