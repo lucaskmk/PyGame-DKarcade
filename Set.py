@@ -29,6 +29,9 @@ STAIR_HEIGHT=145
 DK_WIDTH=120
 DK_HEIGHT=120
 
+FOGO_HEIGHT = 100
+FOGO_WIDTH = 50
+
 barrels = []
 BARREL_WIDTH = 30
 BARREL_HEIGHT = 30
@@ -75,8 +78,17 @@ PLATFORM_IMG=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH, PLATFORM_HEIG
 PLATFORM_IMG_i=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
 PLATFORM_IMG_i=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH+70, PLATFORM_HEIGHT+15))
 
+FOGO_IMG = pygame.image.load('imagens/sprite_fire.png').convert_alpha()
+FOGO_IMG = pygame.transform.scale(FOGO_IMG, ( FOGO_WIDTH, FOGO_HEIGHT))
+
 DK_IMG=pygame.image.load('imagens/sprite_DK_barril.png').convert_alpha()
 DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH, DK_HEIGHT))
+
+DK_IMG_DIREITA=pygame.image.load('imagens/sprite_dk_bravo_direita.png').convert_alpha()
+DK_IMG_DIREITA=pygame.transform.scale(DK_IMG_DIREITA, (DK_WIDTH, DK_HEIGHT))
+
+DK_IMG_ESQUERDA=pygame.image.load('imagens/sprite_dk_bravo_esquerda.png').convert_alpha()
+DK_IMG_ESQUERDA=pygame.transform.scale(DK_IMG_ESQUERDA, (DK_WIDTH, DK_HEIGHT))
 
 def game_over_message():
     font = pygame.font.Font(None, 36)
@@ -99,12 +111,14 @@ def reset_game():
 # ========================== | Class | =================================================================================================================================================
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, img):
+        pygame.sprite.Sprite.__init__(self)
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
 
 
 class Stair(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, img):
+        pygame.sprite.Sprite.__init__(self)
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
 
@@ -112,6 +126,7 @@ class Stair(pygame.sprite.Sprite):
 # Class for the character ============================================================================
 class Character(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height,img):
+        pygame.sprite.Sprite.__init__(self)
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
         self.velocity = 0
@@ -128,6 +143,7 @@ class Character(pygame.sprite.Sprite):
             self.velocity = -self.jump_power
             self.last_jump=now
             self.is_jumping = True  
+
     def update(self):
 
         keys = pygame.key.get_pressed()
@@ -143,6 +159,7 @@ class Character(pygame.sprite.Sprite):
                 elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
                     self.rect.y+=2
                     self.image = CHARACTER_IMG_DOWN
+
             else:
                 on_stair = False
         if on_stair==False:
@@ -204,17 +221,41 @@ class Character(pygame.sprite.Sprite):
             self.rect.left = 0
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
+#=============================================================================================
+# Class for DK
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, img):
+        pygame.sprite.Sprite.__init__(self)        
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
+        self.image_list = [DK_IMG,DK_IMG_DIREITA,DK_IMG_ESQUERDA]
+        self.i=0
+        self.ultima_i=0
+    def update(self):
+        agora=pygame.time.get_ticks()
+        if agora-self.ultima_i>=500:
+            self.i+=1
+            self.image=self.image_list[self.i % 3]
+            print(self.i % 3)
+            self.ultima_i=agora
 
+
+#============================================================================================
+#Class for fire
+class fogo(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image=img
+        self.rect = pygame.Rect(x, y, width, height)
 
 # Class for barrels
 
 class Barrel(pygame.sprite.Sprite):
     def __init__(self, x, y,width, height, img):
+
+        pygame.sprite.Sprite.__init__(self)
+
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
         self.speed =-4
@@ -254,7 +295,7 @@ plataforma_inicial=Platform(0,HEIGHT-50, WIDTH, 50, PLATFORM_IMG_i)
 PLATFORMS=[plataforma_inicial]
 STAIRS=[]
 
-for i in range(1,5):
+for i in range(1,6):
     if (-1)**i < 0:
         EIXO_X_PLATAFORMA = 0
         EIXO_X_ESCADA=WIDTH-100
@@ -270,13 +311,15 @@ for i in range(1,5):
 # Create character   (0,HEIGHT-50, WIDTH, 50, RED)
 character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT,CHARACTER_IMG)
 DK= Enemy( WIDTH-(DK_WIDTH+20) , 20 ,DK_WIDTH, DK_HEIGHT, DK_IMG)
+fogo = fogo (CHARACTER_X-60, CHARACTER_Y-70 ,FOGO_WIDTH, FOGO_HEIGHT, FOGO_IMG)
 
 
 gravity = 0.4
 
 running = True
 clock = pygame.time.Clock()
-spawn_interval = 100
+spawn_interval = 1000
+ultimo_barril= 0
 game_over = False
 
 
@@ -312,11 +355,15 @@ while running:
             if character.rect.colliderect(barrel.rect):
                 game_over = True
                 break
+            if fogo.rect.colliderect(barrel.rect):
+                barrel.kill()
 
         tempo=pygame.time.get_ticks()
-        intervalo= tempo - spawn_interval
-        if intervalo >= spawn_interval :
-            spawn_interval=tempo
+        intervalo= tempo - ultimo_barril
+
+        if intervalo >= spawn_interval:
+            DK.image= DK_IMG
+            ultimo_barril=tempo
             x = WIDTH-50
             y = 150
             barrel = Barrel(x, y, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
@@ -327,14 +374,18 @@ while running:
 
         character.update()
         screen.blit(character.image, character.rect)
+
         DK.update()
         screen.blit(DK.image, DK.rect)
+
+        fogo.update()
+        screen.blit(fogo.image, fogo.rect)
 
     else:
         game_over_message()
 
     pygame.display.flip()
-    clock.tick(50)
+    clock.tick(60)
 
 pygame.quit()
 
