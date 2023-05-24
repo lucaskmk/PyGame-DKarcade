@@ -24,7 +24,7 @@ PLATFORM_WIDTH=WIDTH-60
 PLATFORM_HEIGHT=30
 
 STAIR_WIDTH=30
-STAIR_HEIGHT=130
+STAIR_HEIGHT=145
 
 DK_WIDTH=120
 DK_HEIGHT=120
@@ -130,9 +130,9 @@ class Character(pygame.sprite.Sprite):
                 self.velocity=0
                 self.rect.y+=self.velocity
                 if keys[pygame.K_UP] or keys[pygame.K_w]:
-                    self.rect.y-=7
+                    self.rect.y-=2
                 elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                    self.rect.y+=7
+                    self.rect.y+=2
             else:
                 on_stair = False
         if on_stair==False:
