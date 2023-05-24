@@ -81,7 +81,7 @@ PLATFORM_IMG_i=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH+70, PLATFORM
 FOGO_IMG = pygame.image.load('imagens/sprite_fire.png').convert_alpha()
 FOGO_IMG = pygame.transform.scale(FOGO_IMG, ( FOGO_WIDTH, FOGO_HEIGHT))
 
-DK_IMG=pygame.image.load('imagens/sprite_DK_barril.png').convert_alpha()
+DK_IMG=pygame.image.load('imagens/sprite_dk_jogando.png').convert_alpha()
 DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH, DK_HEIGHT))
 
 DK_IMG_DIREITA=pygame.image.load('imagens/sprite_dk_bravo_direita.png').convert_alpha()
@@ -320,7 +320,7 @@ gravity = 0.4
 
 running = True
 clock = pygame.time.Clock()
-spawn_interval = 2000
+spawn_interval = random.randint(2000, 2500)
 ultimo_barril= 0
 game_over = False
 
@@ -365,9 +365,8 @@ while running:
 
         if intervalo >= spawn_interval:
             DK.i=0
-
             ultimo_barril=tempo
-            x = WIDTH-50
+            x = WIDTH-110
             y = 150
             barrel = Barrel(x, y, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
             barrels.append(barrel)
