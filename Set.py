@@ -56,6 +56,13 @@ CHARACTER_JUMPING_IMG_RIGHT = pygame.transform.scale(CHARACTER_JUMPING_IMG_RIGHT
 CHARACTER_JUMPING_IMG_LEFT = pygame.image.load('imagens\sprite_mario_pulando_ESQUERDA.png').convert_alpha()
 CHARACTER_JUMPING_IMG_LEFT = pygame.transform.scale(CHARACTER_JUMPING_IMG_LEFT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
+CHARACTER_IMG_UP = pygame.image.load('imagens\sprite_mario_subindo.png').convert_alpha()
+CHARACTER_IMG_UP =  pygame.transform.scale(CHARACTER_IMG_UP, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
+CHARACTER_IMG_DOWN = pygame.image.load('imagens\sprite_mario_descendo.png').convert_alpha()
+CHARACTER_IMG_DOWN =  pygame.transform.scale(CHARACTER_IMG_DOWN, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
+
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
 
@@ -131,8 +138,11 @@ class Character(pygame.sprite.Sprite):
                 self.rect.y+=self.velocity
                 if keys[pygame.K_UP] or keys[pygame.K_w]:
                     self.rect.y-=2
+                    self.image= CHARACTER_IMG_UP
+                    
                 elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
                     self.rect.y+=2
+                    self.image = CHARACTER_IMG_DOWN
             else:
                 on_stair = False
         if on_stair==False:
@@ -277,9 +287,7 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if game_over:
                 reset_game()
-            elif event.key == pygame.K_SPACE:
-                CHARACTER_IMG= pygame.image.load('imagens/sprite_mario_pulando.png').convert_alpha()
-                CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT)) 
+            elif event.key == pygame.K_SPACE: 
                 character.jump()
                 
  
