@@ -68,6 +68,8 @@ CHARACTER_IMG_DOWN =  pygame.transform.scale(CHARACTER_IMG_DOWN, (CHARACTER_WIDT
 
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
+BARRIL_explode=pygame.image.load('imagens\explosion-pixel-art.png').convert_alpha()
+BARRIL_explode=pygame.transform.scale(BARRIL_explode, (BARREL_WIDTH,BARREL_HEIGHT))
 
 BARRIL_IMG_D_BAIXO=pygame.image.load('imagens/sprite_barril_direita_baixo.png').convert_alpha()
 BARRIL_IMG_D_BAIXO=pygame.transform.scale(BARRIL_IMG_D_BAIXO, (BARREL_WIDTH,BARREL_HEIGHT))
@@ -362,13 +364,16 @@ class Barrel(pygame.sprite.Sprite):
         if self.rect.x > WIDTH-20:
             self.rect.x = WIDTH-20
             self.speed = -4
-        
+
         if self.rect.colliderect(fogo.rect):
+            self.image= BARRIL_explode
+        if (self.rect.x <= 2) and (self.rect.y >= CHARACTER_Y-70 ):
             self.velocity=0
             self.rect.x = 0
-            self.rect.y = 0
+            self.rect.y = 10000000
             self.y_velocity = 0
             self.speed = 0
+
 
 
 # ========================= | Objects | ================================================================================================================================================== 
