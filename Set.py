@@ -15,10 +15,11 @@ WHITE = (255, 255, 255)
 WIDTH = 1000
 HEIGHT = 780
 
+MARTELO = 0
 CHARACTER_X=100
 CHARACTER_Y=HEIGHT-50-20
-CHARACTER_WIDTH=40
-CHARACTER_HEIGHT=50
+CHARACTER_WIDTH=40 
+CHARACTER_HEIGHT=50 
 
 
 PLATFORM_WIDTH=WIDTH-60
@@ -82,7 +83,7 @@ CHARACTER_HAMMER_RIGHT = pygame.image.load('imagens\sprite_martelo_direito.png')
 CHARACTER_HAMMER_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_RIGHT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT))
 
 CHARACTER_HAMMER_UP_RIGHT = pygame.image.load('imagens\sprite_martelo_cima_direita.png').convert_alpha()
-CHARACTER_HAMMER_UP_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_UP_RIGHT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT+30)).convert_alpha()
+CHARACTER_HAMMER_UP_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_UP_RIGHT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT)).convert_alpha()
 
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
@@ -283,7 +284,15 @@ class Character(pygame.sprite.Sprite):
         #if event.type == pygame.KEYUP:
         #====================================== COM MARTELO ============================================================================
 
-                    
+        if self.equiped==True:
+            self.image=CHARACTER_HAMMER_UP_RIGHT
+            if keys[pygame.K_p]:
+                self.hit = True
+                if self.last_key == 'left':
+                    self.image=CHARACTER_HAMMER_LEFT
+                elif self.last_key == 'right':
+                    self.image = CHARACTER_HAMMER_RIGHT    
+                  
                     
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
@@ -296,6 +305,7 @@ class Character(pygame.sprite.Sprite):
                 self.is_jumping = False
                 break      
 
+<<<<<<< HEAD
         if self.equiped==True:
             if keys[pygame.K_p]:
                 self.hit = True
@@ -304,6 +314,8 @@ class Character(pygame.sprite.Sprite):
             
                 elif self.last_key == 'right':
                     self.image = CHARACTER_HAMMER_RIGHT    
+=======
+>>>>>>> 71f8a5a34083c6901819bf28f85dcf92f3144ed8
 
         
 
@@ -375,6 +387,7 @@ class Barrel(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, width, height)
         self.speed =-4
         self.y_velocity = 0
+        self.ultima=0
 
 
         self.i=0
@@ -417,12 +430,14 @@ class Barrel(pygame.sprite.Sprite):
 
         if self.rect.colliderect(fogo.rect):
             self.image= BARRIL_explode
-        if (self.rect.x <= 2) and (self.rect.y >= CHARACTER_Y-70 ):
-            self.velocity=0
-            self.rect.x = -10
-            self.rect.y = 10000000
-            self.y_velocity = 0
-            self.speed = 0
+            #agora=pygame.time.get_ticks()
+            if self.rect.x == CHARACTER_X-60:
+                self.ultima=agora            
+                self.velocity=0
+                self.rect.x = -10
+                self.rect.y = 10000000
+                self.y_velocity = 0
+                self.speed = 0
 
 class Martelo(pygame.sprite.Sprite):
     def __init__(self, x, y,width, height, img):
