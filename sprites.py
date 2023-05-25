@@ -3,101 +3,320 @@ import pygame
 import random
 from settings import *
 # ========================== | PreSets | ==============================
-WIDTH = 800  
-HEIGHT = 1000
-GRAVITY = 0.6
-RED = (255, 0, 0)
-WHITE = (255, 255, 255)
-# ========================== | Class | ==============================
-class Platform:
-    def __init__(self, x, y, width, height, color):
+#Sounds
+pygame.mixer.music.load('sound/background.mp3')
+pygame.mixer.music.set_volume(0.2)
+pulo=pygame.mixer.Sound('sound/pulo.ogg')
+# ========================== | SPRITES | ==============================
+CHARACTER_IMG=pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
+CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_STAND_IMG_RIGHT = pygame.image.load('imagens\sprite_mario_direita.png').convert_alpha()
+CHARACTER_STAND_IMG_RIGHT = pygame.transform.scale(CHARACTER_STAND_IMG_RIGHT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_STAND_IMG_LEFT = pygame.image.load('imagens\sprite_mario_esquerda.png').convert_alpha()
+CHARACTER_STAND_IMG_LEFT = pygame.transform.scale(CHARACTER_STAND_IMG_LEFT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_JUMPING_IMG_RIGHT = pygame.image.load('imagens\sprite_mario_pulando.png').convert_alpha()
+CHARACTER_JUMPING_IMG_RIGHT = pygame.transform.scale(CHARACTER_JUMPING_IMG_RIGHT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_JUMPING_IMG_LEFT = pygame.image.load('imagens\sprite_mario_pulando_ESQUERDA.png').convert_alpha()
+CHARACTER_JUMPING_IMG_LEFT = pygame.transform.scale(CHARACTER_JUMPING_IMG_LEFT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_IMG_UP = pygame.image.load('imagens\sprite_mario_subindo.png').convert_alpha()
+CHARACTER_IMG_UP =  pygame.transform.scale(CHARACTER_IMG_UP, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_IMG_DOWN = pygame.image.load('imagens\sprite_mario_descendo.png').convert_alpha()
+CHARACTER_IMG_DOWN =  pygame.transform.scale(CHARACTER_IMG_DOWN, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_HAMMER_LEFT = pygame.image.load('imagens\sprite_martelo_esquerdo.png').convert_alpha()
+CHARACTER_HAMMER_LEFT = pygame.transform.scale(CHARACTER_HAMMER_LEFT, (BARREL_WIDTH,BARREL_HEIGHT))
+CHARACTER_HAMMER_RIGHT = pygame.image.load('imagens\sprite_martelo_direito.png').convert_alpha()
+CHARACTER_HAMMER_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_RIGHT, (BARREL_WIDTH,BARREL_HEIGHT))
+BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
+BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
+BARRIL_explode=pygame.image.load('imagens\explosion-pixel-art.png').convert_alpha()
+BARRIL_explode=pygame.transform.scale(BARRIL_explode, (BARREL_WIDTH,BARREL_HEIGHT))
+BARRIL_IMG_D_BAIXO=pygame.image.load('imagens/sprite_barril_direita_baixo.png').convert_alpha()
+BARRIL_IMG_D_BAIXO=pygame.transform.scale(BARRIL_IMG_D_BAIXO, (BARREL_WIDTH,BARREL_HEIGHT))
+BARRIL_IMG_D_CIMA=pygame.image.load('imagens/sprite_barril_direita_cima.png').convert_alpha()
+BARRIL_IMG_D_CIMA=pygame.transform.scale(BARRIL_IMG_D_CIMA, (BARREL_WIDTH,BARREL_HEIGHT))
+BARRIL_IMG_E_BAIXO=pygame.image.load('imagens/sprite_barril_esquerda_baixo.png').convert_alpha()
+BARRIL_IMG_E_BAIXO=pygame.transform.scale(BARRIL_IMG_E_BAIXO, (BARREL_WIDTH,BARREL_HEIGHT))
+STAIR_IMG=pygame.image.load('imagens/sprite_escadas.png').convert_alpha()
+STAIR_IMG=pygame.transform.scale(STAIR_IMG, (STAIR_WIDTH, STAIR_HEIGHT))
+PLATFORM_IMG=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
+PLATFORM_IMG=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH, PLATFORM_HEIGHT))
+PLATFORM_IMG_i=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
+PLATFORM_IMG_i=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH+70, PLATFORM_HEIGHT+15))
+FOGO_IMG = pygame.image.load('imagens/sprite_fire.png').convert_alpha()
+FOGO_IMG = pygame.transform.scale(FOGO_IMG, ( FOGO_WIDTH, FOGO_HEIGHT))
+FOGO_IMG2 = pygame.image.load('imagens/sprite_fogo2.png').convert_alpha()
+FOGO_IMG2 = pygame.transform.scale(FOGO_IMG2, ( FOGO_WIDTH, FOGO_HEIGHT))
+FOGO_IMG3 = pygame.image.load('imagens/sprite_fogo3.png').convert_alpha()
+FOGO_IMG3 = pygame.transform.scale(FOGO_IMG3, ( FOGO_WIDTH, FOGO_HEIGHT))
+DK_IMG=pygame.image.load('imagens/sprite_dk_jogando.png').convert_alpha()
+DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH-10, DK_HEIGHT-10))
+DK_IMG_DIREITA=pygame.image.load('imagens/sprite_dk_bravo_direita.png').convert_alpha()
+DK_IMG_DIREITA=pygame.transform.scale(DK_IMG_DIREITA, (DK_WIDTH, DK_HEIGHT))
+DK_IMG_ESQUERDA=pygame.image.load('imagens/sprite_dk_bravo_esquerda.png').convert_alpha()
+DK_IMG_ESQUERDA=pygame.transform.scale(DK_IMG_ESQUERDA, (DK_WIDTH, DK_HEIGHT))
+MARTELO_IMG=pygame.image.load('imagens/sprite_martelo.png').convert_alpha()
+MARTELO_IMG=pygame.transform.scale(MARTELO_IMG, (MARTELO_WIDTH, MARTELO_HEIGHT))
+# ========================== | Class | =================================================================================================================================================
+barrels = []
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
 
-class Stair:
-    def __init__(self, x, y, width, height, color):
+
+class Stair(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
 
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
-
-class Character:
-    def __init__(self, x, y, width, height, color):
+# Class for the character ============================================================================
+class Character(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height,img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image=img
+        self.equiped= False
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
         self.velocity = 0
-        self.jump_power = 12
-        self.on_ground = False
-        self.on_stair = False  # indicar se ta na escada
+        self.jump_power = 8
+        self.last_jump = pygame.time.get_ticks()
+        self.jump_ticks = 700
+        self.is_jumping = False
+        self.last_key = 'right' 
+        self.lastupdown_key = 'still'
+        self.on_ground = True
+        self.on_stair=False
+    def jump(self):
+        now = pygame.time.get_ticks()
+        ticks_decorridos = now - self.last_jump
+        if ticks_decorridos > self.jump_ticks:
+            self.velocity = -self.jump_power
+            self.last_jump=now
+            self.is_jumping = True  
     def update(self):
-        # botar gravidade na velocidade
-        self.velocity += GRAVITY
-        # Update posicao do jogador
-        self.rect.y += self.velocity
-        for platform in PLATFORMS: # =============================== COLISAO PLATFORMA
+
+        keys = pygame.key.get_pressed()
+        for stair in STAIRS:
+            if self.rect.colliderect(stair.rect):
+                self.on_stair=True
+                self.image = CHARACTER_IMG_UP
+                self.velocity=0
+                self.rect.y+=self.velocity
+                if keys[pygame.K_UP] or keys[pygame.K_w]:
+                    self.rect.y-=2
+                    self.lastupdown_key = 'up'
+                    self.on_ground = False
+                elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                    self.rect.y+=2
+                    self.lastupdown_key = 'down'
+                    self.on_ground = False
+                self.image = CHARACTER_IMG_DOWN
+            else:
+                
+                on_stair = False
+
+        if self.on_stair: # se na escada so desenho da escada
+            # Imagem escada
+            if self.lastupdown_key == 'up' :
+                self.image = CHARACTER_IMG_UP
+            elif self.lastupdown_key == 'down':
+                self.image = CHARACTER_IMG_DOWN
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                self.rect.x -= 3
+                self.last_key = 'left'
+            elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                self.rect.x += 3
+                self.last_key = 'right'
+        else: # se n faz td
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                self.rect.x -= 3
+                self.image = pygame.image.load('imagens/sprite_mario_andando_esquerda.png').convert_alpha()
+                self.image = pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+                self.last_key = 'left'
+            elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                self.rect.x += 3
+                self.image = pygame.image.load('imagens/sprite_mario_andando_direita.png').convert_alpha()
+                self.image = pygame.transform.scale(self.image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+                self.last_key = 'right'
+            # IMAGEM SALTANDO
+            if self.is_jumping: 
+                if self.last_key == 'right':
+                    self.image = CHARACTER_JUMPING_IMG_RIGHT
+                elif self.last_key == 'left':
+                    self.image = CHARACTER_JUMPING_IMG_LEFT 
+            # IMAGEM PARADO
+            if not (keys[pygame.K_LEFT] or keys[pygame.K_a] or keys[pygame.K_RIGHT] or keys[pygame.K_d]):
+                if not self.on_ground:
+                    # IMAGEM SALTANDO enquatoparado
+                    if not self.on_stair:
+                        if self.last_key == 'right':
+                            self.image = CHARACTER_JUMPING_IMG_RIGHT
+                        elif self.last_key == 'left':
+                            self.image = CHARACTER_JUMPING_IMG_LEFT
+                    # Imagem escada
+                    if self.lastupdown_key == 'up' :
+                        self.image = CHARACTER_IMG_UP
+                    elif self.lastupdown_key == 'down':
+                        self.image = CHARACTER_IMG_DOWN
+                elif self.on_ground:
+                    if self.last_key == 'right':
+                        self.image = CHARACTER_STAND_IMG_RIGHT
+                    elif self.last_key == 'left':
+                        self.image = CHARACTER_STAND_IMG_LEFT
+                    if self.is_jumping: # IMAGEM SALTANDO se tambem parado
+                        if self.last_key == 'right':
+                            self.image = CHARACTER_JUMPING_IMG_RIGHT
+                        elif self.last_key == 'left':
+                            self.image = CHARACTER_JUMPING_IMG_LEFT 
+            
+        if on_stair==False:
+            self.velocity += gravity
+            self.rect.y += self.velocity
+            self.lastupdown_key = 'still'
+            self.on_ground = True
+            self.on_stair =  False
+            
+            
+        #for event in pygame.event.get():
+        # ----- Verifica consequências
+        #if event.type == pygame.KEYUP:
+        #====================================== COM MARTELO ============================================================================
+        if self.equiped==True:
+            if keys[pygame.K_p]:
+                self.hit = True
+                if self.last_key == 'left':
+                    self.image = CHARACTER_HAMMER_LEFT
+                elif self.last_key == 'right':
+                    self.image = CHARACTER_HAMMER_RIGHT
+                    
+                    
+        for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 if self.velocity > 0:
                     self.rect.bottom = platform.rect.top
                     self.velocity = 0
-                    self.on_ground = True
                 else:
                     self.rect.top = platform.rect.bottom
                     self.velocity = 0
-                break
-        else:
-            self.on_ground = False
-        for stair in STAIRS: # ====================================== COLISAO NA ESCADA
-            if self.rect.colliderect(stair.rect):
-                self.rect.bottom = stair.rect.top
-                self.velocity = 0
-                self.on_ground = True
-                self.on_stair = True 
-                break
-        else:
-            self.on_stair = False
-        keys = pygame.key.get_pressed() # =========================== MOV HORIZONTAL
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.rect.x -= 3
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.rect.x += 3
+                self.is_jumping = False
+                break        
+        
+        if self.rect.bottom > 950:
+            self.rect.bottom = 950
+            self.velocity = 0
+            self.on_ground = True
 
-        # Deixar ele so dentro da tela
+        if self.rect.top < 0:
+            self.rect.top = 0
+            self.velocity = 0
+
+        # Deixa ele so dentro da tela
+
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
+     
+#=============================================================================================
+# Class for DK
 
-        if self.on_stair: # ========================================= MOV VERTICAL NAS ESCADAS
-            if keys[pygame.K_UP] or keys[pygame.K_w]:
-                self.rect.y -= 2
-            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                self.rect.y += 2
-    def jump(self):
-        if self.on_ground:
-            self.velocity = -self.jump_power
-            self.on_ground = False
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
-## ========================= | Objects | ============================== 
-# (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
-PLATFORM1 = Platform(0, 950, 800, 20, RED)
-PLATFORM2 = Platform(0, 950-150, 800, 20, RED)
-PLATFORM3 = Platform(0, 950-300, 800, 20, RED)
-PLATFORM4 = Platform(0, 950-450, 800, 20, RED)
-PLATFORM5 = Platform(0, 950-600, 800, 20, RED)
-PLATFORM6 = Platform(0, 950-750, 800, 20, RED)
-PLATFORM7 = Platform(200, 950-870, 200, 20, RED)
-STAIR1 = Stair(720, 950-150, 50, 150, WHITE)
-STAIR2 = Stair(30, 950-300, 50, 150, WHITE)
-STAIR3 = Stair(720, 950-450, 50, 150, WHITE)
-STAIR4 = Stair(30, 950-600, 50, 150, WHITE)
-STAIR5 = Stair(720, 950-750, 50, 150, WHITE)
-STAIR6 = Stair(320, 950-870, 50, 120, WHITE)
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, img):
+        pygame.sprite.Sprite.__init__(self)       
+        self.image=img
+        self.rect = pygame.Rect(x, y, width, height)
+        self.image_list = [DK_IMG,DK_IMG_DIREITA,DK_IMG_ESQUERDA]
+        self.i=0
+        self.ultima_i=0
+    def update(self):
+        agora=pygame.time.get_ticks()
+        if agora-self.ultima_i>=700:
+            self.i+=1
+            self.image=self.image_list[self.i % 3]
+            self.ultima_i=agora
 
-CHARACTER = Character(100, 930, 50, 50, WHITE)
-# detectar colisoes nessa lista
-PLATFORMS = [PLATFORM1, PLATFORM2, PLATFORM3, PLATFORM4, PLATFORM5, PLATFORM6, PLATFORM7]
-STAIRS = [STAIR1, STAIR2, STAIR3, STAIR4, STAIR5, STAIR6]
+
+#============================================================================================
+#Class for fire
+class fogo(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image=img
+        self.rect = pygame.Rect(x, y, width, height)
+        self.image_list = [FOGO_IMG3, FOGO_IMG, FOGO_IMG2]
+        self.i=0
+        self.ultima_i=0
+    def update(self):
+        agora=pygame.time.get_ticks()
+        if agora-self.ultima_i>=500:
+            self.i+=1
+            self.image=self.image_list[self.i % 3]
+            self.ultima_i=agora
+
+# Class for barrels
+
+class Barrel(pygame.sprite.Sprite):
+    def __init__(self, x, y,width, height, img):
+
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image=img
+        self.rect = pygame.Rect(x, y, width, height)
+        self.speed =-4
+        self.y_velocity = 0
+
+
+        self.i=0
+        self.ultima_i=0
+
+    def update(self):
+        self.rect.x += self.speed
+        self.rect.y += self.y_velocity
+        agora=pygame.time.get_ticks()
+        if agora-self.ultima_i>=250:
+            if self.speed<0:
+                self.image_list = [BARRIL_IMG,  BARRIL_IMG_E_BAIXO, BARRIL_IMG_D_BAIXO, BARRIL_IMG_D_CIMA]
+            if self.speed>0:
+                self.image_list = [BARRIL_IMG, BARRIL_IMG_D_CIMA, BARRIL_IMG_D_BAIXO, BARRIL_IMG_E_BAIXO]
+
+            self.i+=1
+            self.image=self.image_list[self.i % 4]
+            self.ultima_i=agora
+
+
+        for platform in PLATFORMS:
+            if self.rect.colliderect(platform.rect):
+                self.rect.bottom = platform.rect.top
+                self.y_velocity = 0
+                break
+        else:
+            self.y_velocity += gravity
+
+        
+
+        # Deixa ele so dentro da tela
+
+        if self.rect.x < 0:
+            self.rect.x = 0
+            self.speed= 4
+
+        if self.rect.x > WIDTH-20:
+            self.rect.x = WIDTH-20
+            self.speed = -4
+
+        if self.rect.colliderect(fogo.rect):
+            self.image= BARRIL_explode
+        if (self.rect.x <= 2) and (self.rect.y >= CHARACTER_Y-70 ):
+            self.velocity=0
+            self.rect.x = -10
+            self.rect.y = 10000000
+            self.y_velocity = 0
+            self.speed = 0
+
+class Martelo(pygame.sprite.Sprite):
+    def __init__(self, x, y,width, height, img):
+
+        pygame.sprite.Sprite.__init__(self)      
+        self.image=img
+        self.rect = pygame.Rect(x, y, width, height)
