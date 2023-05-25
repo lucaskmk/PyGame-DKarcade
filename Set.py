@@ -87,8 +87,9 @@ CHARACTER_HAMMER_UP_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_UP_RIGHT, (C
 
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
-BARRIL_explode=pygame.image.load('imagens\explosion-pixel-art.png').convert_alpha()
-BARRIL_explode=pygame.transform.scale(BARRIL_explode, (BARREL_WIDTH,BARREL_HEIGHT))
+
+BARRIL_EXPLODE=pygame.image.load('imagens\explosion.png').convert_alpha()
+BARRIL_EXPLODE=pygame.transform.scale(BARRIL_EXPLODE, (BARREL_WIDTH,BARREL_HEIGHT))
 
 BARRIL_IMG_D_BAIXO=pygame.image.load('imagens/sprite_barril_direita_baixo.png').convert_alpha()
 BARRIL_IMG_D_BAIXO=pygame.transform.scale(BARRIL_IMG_D_BAIXO, (BARREL_WIDTH,BARREL_HEIGHT))
@@ -384,7 +385,6 @@ class Barrel(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, width, height)
         self.speed =-4
         self.y_velocity = 0
-        self.ultima=0
 
 
         self.i=0
@@ -426,15 +426,13 @@ class Barrel(pygame.sprite.Sprite):
             self.speed = -4
 
         if self.rect.colliderect(fogo.rect):
-            self.image= BARRIL_explode
-            #agora=pygame.time.get_ticks()
-            if self.rect.x == CHARACTER_X-60:
-                self.ultima=agora            
-                self.velocity=0
-                self.rect.x = -10
-                self.rect.y = 10000000
-                self.y_velocity = 0
-                self.speed = 0
+            #agora=pygame.time.get_ticks()     
+ 
+            self.velocity=0
+            self.rect.x = -10
+            self.rect.y = 10000000
+            self.y_velocity = 0
+            self.speed = 0
 
 class Martelo(pygame.sprite.Sprite):
     def __init__(self, x, y,width, height, img):
@@ -444,6 +442,36 @@ class Martelo(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, width, height)
 
 
+
+class Explosion(pygame.sprite.Sprite):
+    def __init__(self, x, y,width, height):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.frame = 0  # Armazena o índice atual na animação
+        self.image_list= [BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE]
+        self.image=self.image_list[self.frame]        
+        
+        def update(self):        
+        
+            now = pygame.time.get_ticks()
+
+            elapsed_ticks = now - self.last_update
+
+            if elapsed_ticks > self.frame_ticks:
+
+                self.last_update = now
+
+                self.frame += 1
+
+                if self.frame == len(self.explosion_anim):
+                    # Se sim, tchau explosão!
+                    self.kill()
+                else:
+                    # Se ainda não chegou ao fim da explosão, troca de imagem.
+                    center = self.rect.center
+                    self.image = self.explosion_anim[self.frame]
+                    self.rect = self.image.get_rect()
+                    self.rect.center = center
 
 # ========================= | Objects | ================================================================================================================================================== 
 # (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
@@ -527,7 +555,15 @@ while running:
                 else:
                     martelosom.play()
                     break
+<<<<<<< HEAD
+            if fogo.rect.colliderect(barrel.rect):
+                print('dfjkd')
+                Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT)
+                Explosao.update()
+                screen.blit(Explosao.image, Explosao.rect)
+=======
 
+>>>>>>> 873e506bd112e3ea0d518c93331e3378b8b75bea
 
         spawn_interval = random.randint(2000, 3500)
         tempo=pygame.time.get_ticks()
@@ -559,6 +595,7 @@ while running:
 
         martelo.update()
         listamartelo.draw(screen)
+
 
     else:
         game_over_message()
