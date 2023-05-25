@@ -5,7 +5,55 @@ from ClassCharecter import *
 from sprites import Character, Platform, Enemy, fogo, Barrel, Martelo, barrels
 from sprites import *
 from settings import *
-from settings import screen
+from settings import screen,  MARTELO_WIDTH
+# ========================== | PreSets | ================================================================================================================================================ 
+WIDTH = 1000
+HEIGHT = 780
+CHARACTER_X=100
+CHARACTER_Y=HEIGHT-50-20
+CHARACTER_WIDTH=40
+CHARACTER_HEIGHT=50
+PLATFORM_WIDTH=WIDTH-60
+PLATFORM_HEIGHT=30
+STAIR_WIDTH=30
+STAIR_HEIGHT=145
+DK_WIDTH=120
+DK_HEIGHT=120
+FOGO_HEIGHT = 90
+FOGO_WIDTH = 50
+BARREL_WIDTH = 33
+BARREL_HEIGHT = 33
+MARTELO_WIDTH= 30
+MARTELO_HEIGHT=30
+RED = (255, 0, 0)
+WHITE = (255, 255, 255)
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Donkey Kong Arcade")
+character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT,CHARACTER_IMG)
+DK= Enemy( WIDTH-(DK_WIDTH+20) , 20 ,DK_WIDTH, DK_HEIGHT, DK_IMG)
+fogo = fogo (CHARACTER_X-60, CHARACTER_Y-70 ,FOGO_WIDTH, FOGO_HEIGHT, FOGO_IMG)
+martelo = Martelo(820, 470, MARTELO_WIDTH, MARTELO_HEIGHT, MARTELO_IMG)
+listamartelo=pygame.sprite.Group()
+listamartelo.add(martelo)
+gravity = 0.4
+running = True
+clock = pygame.time.Clock()
+ultimo_barril= 0
+game_over = False
+#=================================== | Initialize Pygame | =====================
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Donkey Kong Arcade")
+character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT,CHARACTER_IMG)
+DK= Enemy( WIDTH-(DK_WIDTH+20) , 20 ,DK_WIDTH, DK_HEIGHT, DK_IMG)
+fogo = fogo (CHARACTER_X-60, CHARACTER_Y-70 ,FOGO_WIDTH, FOGO_HEIGHT, FOGO_IMG)
+martelo = Martelo(820, 470, MARTELO_WIDTH, MARTELO_HEIGHT, MARTELO_IMG)
+listamartelo=pygame.sprite.Group()
+listamartelo.add(martelo)
+gravity = 0.4
+running = True
+clock = pygame.time.Clock()
+ultimo_barril= 0
+game_over = False
 #=================================== | Initialize Pygame | =====================
 pygame.init()
 pygame.mixer.init()
