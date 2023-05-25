@@ -47,9 +47,9 @@ pygame.display.set_caption("Donkey Kong Arcade")
 #Sounds
 
 pygame.mixer.music.load('sound/background.mp3')
-pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.set_volume(0.1)
 pulo=pygame.mixer.Sound('sound/pulo.ogg')
-
+pulo.set_volume(0.05)
 
 
 
@@ -467,7 +467,9 @@ while running:
             if game_over:
                 reset_game()
             elif event.key == pygame.K_SPACE:
-                    pygame.mixer.Sound.play(pulo)
+
+                    pulo.play()
+
                     character.jump()
                 
  
