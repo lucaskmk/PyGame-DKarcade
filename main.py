@@ -1,6 +1,8 @@
 import pygame
 import random
 import time
+from ClassCharecter import *
+from sprites import Character, Platform, Enemy, fogo, Barrel, Martelo, barrels
 from sprites import *
 from settings import *
 from settings import screen
