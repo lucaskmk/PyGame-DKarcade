@@ -305,7 +305,6 @@ class Character(pygame.sprite.Sprite):
                 self.is_jumping = False
                 break      
 
-<<<<<<< HEAD
         if self.equiped==True:
             if keys[pygame.K_p]:
                 self.hit = True
@@ -314,8 +313,6 @@ class Character(pygame.sprite.Sprite):
             
                 elif self.last_key == 'right':
                     self.image = CHARACTER_HAMMER_RIGHT    
-=======
->>>>>>> 71f8a5a34083c6901819bf28f85dcf92f3144ed8
 
         
 
