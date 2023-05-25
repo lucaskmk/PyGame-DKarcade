@@ -50,6 +50,8 @@ pygame.mixer.music.load('sound/background.mp3')
 pygame.mixer.music.set_volume(0.1)
 pulo=pygame.mixer.Sound('sound/pulo.mp3')
 pulo.set_volume(0.05)
+martelosom=pygame.mixer.Sound('sound/martelo.mp3')
+martelosom.set_volume(0.05)
 
 
 
@@ -299,6 +301,7 @@ class Character(pygame.sprite.Sprite):
                 self.hit = True
                 if self.last_key == 'left':
                     self.image=CHARACTER_HAMMER_UP_RIGHT
+            
                 elif self.last_key == 'right':
                     self.image = CHARACTER_HAMMER_RIGHT    
 
@@ -509,9 +512,10 @@ while running:
             if character.rect.colliderect(barrel.rect):
                 if not character.hit:
                     game_over = True
+                else:
+                    martelosom.play()
                     break
-            if fogo.rect.colliderect(barrel.rect):
-                barrel.kill()
+
 
         spawn_interval = random.randint(2000, 3500)
         tempo=pygame.time.get_ticks()
