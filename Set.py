@@ -48,7 +48,7 @@ pygame.display.set_caption("Donkey Kong Arcade")
 
 pygame.mixer.music.load('sound/background.mp3')
 pygame.mixer.music.set_volume(0.1)
-pulo=pygame.mixer.Sound('sound/pulo.ogg')
+pulo=pygame.mixer.Sound('sound/pulo.mp3')
 pulo.set_volume(0.05)
 
 
@@ -182,6 +182,7 @@ class Character(pygame.sprite.Sprite):
             self.velocity = -self.jump_power
             self.last_jump=now
             self.is_jumping = True  
+            pulo.play()
 
     
 
@@ -476,9 +477,9 @@ while running:
                 reset_game()
             elif event.key == pygame.K_SPACE:
 
-                    pulo.play()
 
                     character.jump()
+                    
                 
  
 
