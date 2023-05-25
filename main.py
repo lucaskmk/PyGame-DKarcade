@@ -1,62 +1,66 @@
-# ========================== | Imports | ==============================
 import pygame
 import random
-from settings import *
+import time
 from sprites import *
-# ========================== | Display | ==============================
+from settings import *
+from settings import screen
+#=================================== | Initialize Pygame | =====================
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Donkey Kong Arcade")
-
-# ========================== | Game loop | ==========================
-running = True
-clock = pygame.time.Clock()
-spawn_timer = 0
-spawn_interval = 90
-min_barrel_count = 2
-game_over = False
+pygame.mixer.init()
+pygame.mixer.music.play(loops=-1)
 while running:
     for event in pygame.event.get():
+        if event.type == pygame.KEYUP:
+            character.hit = False
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
             if game_over:
                 reset_game()
-            elif event.key == pygame.K_SPACE:
-                CHARACTER.jump()
+            elif event.key == pygame.K_SPACE:  
+                    character.jump()
     screen.fill((0, 0, 0))
-# ================================== | CREATE | ======================
-    for platform in PLATFORMS:
-        platform.draw(screen)
     for stair in STAIRS:
-        stair.draw(screen)
-# ================================= | Update Barrel | ================
+        STAIR_IMG = pygame.Surface.set_colorkey(stair.image, (0,0,0))
+        screen.blit(stair.image, stair.rect)
+    for platform in PLATFORMS:
+        screen.blit(platform.image, platform.rect)
     if not game_over:
-        for barrel in BARRELS:
+        for barrel in barrels:
             barrel.update()
-            barrel.draw(screen)
-
-        for barrel in BARRELS:
-            if CHARACTER.rect.colliderect(barrel.rect):
-                game_over = True
-                break
-        spawn_timer += clock.get_rawtime()
-        if spawn_timer >= spawn_interval:
-            for platform in PLATFORMS:
-                x = random.randint(830, 1060)
-                y = platform.rect.top - barrel_radius
-                barrel = Barrel(x, y, barrel_radius, RED, barrel_speed)
-                BARRELS.append(barrel)
-            spawn_timer = 0
-# ================================= | END Update Barrel | =============
-        CHARACTER.update()
-        CHARACTER.draw(screen)
+            screen.blit(barrel.image, barrel.rect)
+        for barrel in barrels:
+            if character.rect.colliderect(barrel.rect):
+                if not character.hit:
+                    game_over = True
+                    break
+            if fogo.rect.colliderect(barrel.rect):
+                barrel.kill()
+        spawn_interval = random.randint(2000, 3500)
+        tempo=pygame.time.get_ticks()
+        intervalo= tempo - ultimo_barril
+        if intervalo >= spawn_interval:
+            DK.i=0
+            ultimo_barril=tempo
+            x = WIDTH-160
+            y = 150
+            barrel = Barrel(x, y, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
+            barrels.append(barrel)
+        if character.rect.colliderect(martelo.rect):
+            martelo.rect.x = 1200
+            character.equiped= True
+        character.update()
+        screen.blit(character.image, character.rect)
+        DK.update()
+        screen.blit(DK.image, DK.rect)
+        fogo.update()
+        screen.blit(fogo.image, fogo.rect)
+        martelo.update()
+        listamartelo.draw(screen)
     else:
         game_over_message()
-
     pygame.display.flip()
-    clock.tick(60)
-
+    clock.tick(50)
 pygame.quit()
 
 
