@@ -484,8 +484,8 @@ while running:
             
 
         if character.rect.colliderect(martelo.rect):
-                    print('ffsf')
-                    del martelo
+                    martelo.rect.x = 1200
+
         character.update()
         screen.blit(character.image, character.rect)
 
