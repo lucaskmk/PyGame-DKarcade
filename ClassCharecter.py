@@ -1,4 +1,4 @@
-import pygame
+import pygame    
 import random
 from settings import *
 from sprites import Character, Platform, Enemy, fogo, Barrel, Martelo, barrels
