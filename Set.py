@@ -63,9 +63,9 @@ CHARACTER_IMG_UP = pygame.image.load('imagens\sprite_mario_subindo.png').convert
 CHARACTER_IMG_UP =  pygame.transform.scale(CHARACTER_IMG_UP, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 CHARACTER_IMG_DOWN = pygame.image.load('imagens\sprite_mario_descendo.png').convert_alpha()
 CHARACTER_IMG_DOWN =  pygame.transform.scale(CHARACTER_IMG_DOWN, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-CHARACTER_HAMMER_LEFT = pygame.image.load('imagens/sprite_barril.png').convert_alpha()
+CHARACTER_HAMMER_LEFT = pygame.image.load('imagens\sprite_martelo_esquerdo.png').convert_alpha()
 CHARACTER_HAMMER_LEFT = pygame.transform.scale(CHARACTER_HAMMER_LEFT, (BARREL_WIDTH,BARREL_HEIGHT))
-CHARACTER_HAMMER_RIGHT = pygame.image.load('imagens/sprite_barril.png').convert_alpha()
+CHARACTER_HAMMER_RIGHT = pygame.image.load('imagens\sprite_martelo_direito.png').convert_alpha()
 CHARACTER_HAMMER_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_RIGHT, (BARREL_WIDTH,BARREL_HEIGHT))
 
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
@@ -129,7 +129,9 @@ def reset_game():
     character.velocity = 0
     character.on_ground = True
     character.on_stair = False
+    character.equiped= False
     spawn_interval = 100
+    martelo.rect.x = 820
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
 class Platform(pygame.sprite.Sprite):
@@ -254,17 +256,21 @@ class Character(pygame.sprite.Sprite):
             self.rect.y += self.velocity
             self.lastupdown_key = 'still'
             self.on_ground = True
-            self.on_stair =False
+            self.on_stair =  False
             
-        #====================================== COM MARTELO
+            
+        #for event in pygame.event.get():
+        # ----- Verifica consequências
+        #if event.type == pygame.KEYUP:
+        #====================================== COM MARTELO ============================================================================
         if self.equiped==True:
-            
             if keys[pygame.K_p]:
                 self.hit = True
                 if self.last_key == 'left':
                     self.image = CHARACTER_HAMMER_LEFT
                 elif self.last_key == 'right':
                     self.image = CHARACTER_HAMMER_RIGHT
+                    
                     
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
@@ -447,11 +453,14 @@ game_over = False
 
 while running:
     for event in pygame.event.get():
+        if event.type == pygame.KEYUP:
+            character.hit = False
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
             if game_over:
                 reset_game()
+                
             elif event.key == pygame.K_SPACE:  
                     character.jump()
                 
@@ -476,8 +485,9 @@ while running:
 
         for barrel in barrels:
             if character.rect.colliderect(barrel.rect):
-                game_over = True
-                break
+                if not character.hit:
+                    game_over = True
+                    break
             if fogo.rect.colliderect(barrel.rect):
                 barrel.kill()
 
