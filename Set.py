@@ -258,7 +258,8 @@ class Character(pygame.sprite.Sprite):
             
         #====================================== COM MARTELO
         if self.equiped==True:
-            if keys[pygame.K_KP_ENTER]:
+            
+            if keys[pygame.K_p]:
                 self.hit = True
                 if self.last_key == 'left':
                     self.image = CHARACTER_HAMMER_LEFT
