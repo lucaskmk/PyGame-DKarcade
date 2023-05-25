@@ -59,13 +59,14 @@ CHARACTER_JUMPING_IMG_RIGHT = pygame.image.load('imagens\sprite_mario_pulando.pn
 CHARACTER_JUMPING_IMG_RIGHT = pygame.transform.scale(CHARACTER_JUMPING_IMG_RIGHT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 CHARACTER_JUMPING_IMG_LEFT = pygame.image.load('imagens\sprite_mario_pulando_ESQUERDA.png').convert_alpha()
 CHARACTER_JUMPING_IMG_LEFT = pygame.transform.scale(CHARACTER_JUMPING_IMG_LEFT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-
 CHARACTER_IMG_UP = pygame.image.load('imagens\sprite_mario_subindo.png').convert_alpha()
 CHARACTER_IMG_UP =  pygame.transform.scale(CHARACTER_IMG_UP, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-
 CHARACTER_IMG_DOWN = pygame.image.load('imagens\sprite_mario_descendo.png').convert_alpha()
 CHARACTER_IMG_DOWN =  pygame.transform.scale(CHARACTER_IMG_DOWN, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-
+CHARACTER_HAMMER_LEFT = pygame.image.load('imagens/sprite_barril.png').convert_alpha()
+CHARACTER_HAMMER_LEFT = pygame.transform.scale(CHARACTER_HAMMER_LEFT, (BARREL_WIDTH,BARREL_HEIGHT))
+CHARACTER_HAMMER_RIGHT = pygame.image.load('imagens/sprite_barril.png').convert_alpha()
+CHARACTER_HAMMER_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_RIGHT, (BARREL_WIDTH,BARREL_HEIGHT))
 
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
@@ -150,6 +151,7 @@ class Character(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height,img):
         pygame.sprite.Sprite.__init__(self)
         self.image=img
+        self.equiped= False
         self.rect = pygame.Rect(x, y, width, height)
         self.velocity = 0
         self.jump_power = 8
@@ -253,7 +255,16 @@ class Character(pygame.sprite.Sprite):
             self.lastupdown_key = 'still'
             self.on_ground = True
             self.on_stair =False
-
+            
+        #====================================== COM MARTELO
+        if self.equiped==True:
+            if keys[pygame.K_KP_ENTER]:
+                self.hit = True
+                if self.last_key == 'left':
+                    self.image = CHARACTER_HAMMER_LEFT
+                elif self.last_key == 'right':
+                    self.image = CHARACTER_HAMMER_LEFT
+                    
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 if self.velocity > 0:
@@ -266,7 +277,7 @@ class Character(pygame.sprite.Sprite):
                 break        
         
 
-
+        
 
             
 
@@ -484,7 +495,9 @@ while running:
             
 
         if character.rect.colliderect(martelo.rect):
-                    martelo.rect.x = 1200
+            martelo.rect.x = 1200
+            character.equiped= True
+            
 
         character.update()
         screen.blit(character.image, character.rect)
