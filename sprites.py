@@ -22,10 +22,16 @@ CHARACTER_IMG_UP = pygame.image.load('imagens\sprite_mario_subindo.png').convert
 CHARACTER_IMG_UP =  pygame.transform.scale(CHARACTER_IMG_UP, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 CHARACTER_IMG_DOWN = pygame.image.load('imagens\sprite_mario_descendo.png').convert_alpha()
 CHARACTER_IMG_DOWN =  pygame.transform.scale(CHARACTER_IMG_DOWN, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
 CHARACTER_HAMMER_LEFT = pygame.image.load('imagens\sprite_martelo_esquerdo.png').convert_alpha()
-CHARACTER_HAMMER_LEFT = pygame.transform.scale(CHARACTER_HAMMER_LEFT, (BARREL_WIDTH,BARREL_HEIGHT))
+CHARACTER_HAMMER_LEFT = pygame.transform.scale(CHARACTER_HAMMER_LEFT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
 CHARACTER_HAMMER_RIGHT = pygame.image.load('imagens\sprite_martelo_direito.png').convert_alpha()
-CHARACTER_HAMMER_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_RIGHT, (BARREL_WIDTH,BARREL_HEIGHT))
+CHARACTER_HAMMER_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_RIGHT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+CHARACTER_HAMMER_RIGHT_UP = pygame.image.load('imagens\sprite_martelo_cima_direita.png').convert_alpha()
+CHARACTER_HAMMER_RIGHT_UP = pygame.transform.scale(CHARACTER_HAMMER_RIGHT_UP, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
+
+
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
 BARRIL_explode=pygame.image.load('imagens\explosion-pixel-art.png').convert_alpha()

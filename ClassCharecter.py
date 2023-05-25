@@ -116,6 +116,8 @@ class Character(pygame.sprite.Sprite):
         #if event.type == pygame.KEYUP:
         #====================================== COM MARTELO ============================================================================
         if self.equiped==True:
+            CHARACTER_HEIGHT+=30
+            CHARACTER_WIDTH+=30
             if keys[pygame.K_p]:
                 self.hit = True
                 if self.last_key == 'left':
