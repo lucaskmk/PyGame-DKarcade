@@ -1,7 +1,28 @@
 # ========================== | Imports | ==============================
 import pygame
 import random
-from settings import *
+from settings import MARTELO_WIDTH, CHARACTER_WIDTH, MARTELO_HEIGHT, CHARACTER_HEIGHT, DK_WIDTH, DK_HEIGHT, BARREL_WIDTH, BARREL_HEIGHT, STAIR_WIDTH, STAIR_HEIGHT, PLATFORM_WIDTH, PLATFORM_HEIGHT, WIDTH, gravity, PLATFORMS, CHARACTER_Y, FOGO_WIDTH, FOGO_HEIGHT
+# ========================== | PreSets | ================================================================================================================================================ 
+WIDTH = 1000
+HEIGHT = 780
+CHARACTER_X=100
+CHARACTER_Y=HEIGHT-50-20
+CHARACTER_WIDTH=40
+CHARACTER_HEIGHT=50
+PLATFORM_WIDTH=WIDTH-60
+PLATFORM_HEIGHT=30
+STAIR_WIDTH=30
+STAIR_HEIGHT=145
+DK_WIDTH=120
+DK_HEIGHT=120
+FOGO_HEIGHT = 90
+FOGO_WIDTH = 50
+BARREL_WIDTH = 33
+BARREL_HEIGHT = 33
+MARTELO_WIDTH= 30
+MARTELO_HEIGHT=30
+RED = (255, 0, 0)
+WHITE = (255, 255, 255)
 # ========================== | PreSets | ==============================
 #Sounds
 pygame.mixer.music.load('sound/background.mp3')

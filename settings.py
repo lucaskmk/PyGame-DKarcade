@@ -1,7 +1,7 @@
 # ========================== | Imports | ================================================================================================================================================ 
 import pygame
 import random
-from sprites import Character, Platform, Enemy, fogo, Barrel, Martelo, barrels
+from sprites import Character, Platform, Enemy, fogo, Barrel, Martelo, barrels, Stair
 from sprites import *
 # ========================== | PreSets | ================================================================================================================================================ 
 WIDTH = 1000
