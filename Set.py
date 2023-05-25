@@ -264,7 +264,7 @@ class Character(pygame.sprite.Sprite):
                 if self.last_key == 'left':
                     self.image = CHARACTER_HAMMER_LEFT
                 elif self.last_key == 'right':
-                    self.image = CHARACTER_HAMMER_LEFT
+                    self.image = CHARACTER_HAMMER_RIGHT
                     
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
