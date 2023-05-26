@@ -431,33 +431,28 @@ class barrelhit(pygame.sprite.Sprite):
     
 
 class Explosion(pygame.sprite.Sprite):
-    def __init__(self, x, y,width, height):
+    def __init__(self, x, y,width, height,img):
         pygame.sprite.Sprite.__init__(self)
+        self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-        self.frame = 0  
-        self.image_list= [BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE]
-        self.image=self.image_list[self.frame]        
-        self.last_update=2000
+        self.image_list= [BARRIL_EXPLODE,BARRIL_EXPLODE,BARRIL_EXPLODE]
+        self.i=0
+        self.ultima_i=0
 
-        def update(self):        
-            
-            
+        def update(self):
 
-            now = pygame.time.get_ticks()
+            agora=pygame.time.get_ticks()
+            if agora-self.ultima_i>=500:
+                self.i+=1
+                self.image=self.image_list[self.i]
+                self.ultima_i=agora
+                    
 
-            elapsed_ticks = now - self.last_update
-            if elapsed_ticks > self.frame_ticks:
+            if self.i==len(self.image_list):
+                self.kill()
 
-                self.last_update = now
-
-                self.frame += 1
-
-                if self.frame == len(self.image_list):
-                    # Se sim, tchau explosão!
-                    self.kill()
-                else:
                     # Se ainda não chegou ao fim da explosão, troca de imagem.
-                    self.image = self.explosion_list[self.frame]
+
 
 # ========================= | Objects | ================================================================================================================================================== 
 # (Posicao X, posicao Y, tamanho em X, grosura em Y , (Cor))
@@ -543,15 +538,18 @@ while running:
                     game_over = True
                 else:
                     martelosom.play()
-                    barrel.image = BARRIL_EXPLODE
+                    barrel.rect.y = 10000000
+                    Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
+                    Explosao.update()
+                    screen.blit(Explosao.image, Explosao.rect)
+                    time.sleep(0.1)
                     #x_barrilquebrado = barrel.rect.x
                     #x_barrilquebrado = barrel.rect.y
-                    barrel.rect.y = 10000000
                     #screen.blit(barrelhit.image)
                     hitbarrel = True
                     break
             if barrel.rect.colliderect(fogo.rect) :
-                Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT)
+                Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
                 Explosao.update()
                 screen.blit(Explosao.image, Explosao.rect)
                 barrel.velocity=0
