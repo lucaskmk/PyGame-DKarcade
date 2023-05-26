@@ -440,9 +440,6 @@ class Explosion(pygame.sprite.Sprite):
         self.last_update=2000
 
         def update(self):        
-            
-            
-
             now = pygame.time.get_ticks()
 
             elapsed_ticks = now - self.last_update
@@ -544,6 +541,9 @@ while running:
                 else:
                     martelosom.play()
                     barrel.image = BARRIL_EXPLODE
+                    Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT)
+                    Explosao.update()
+                    screen.blit(Explosao.image, Explosao.rect)
                     #x_barrilquebrado = barrel.rect.x
                     #x_barrilquebrado = barrel.rect.y
                     barrel.rect.y = 10000000
@@ -595,7 +595,7 @@ while running:
         game_over_message()
 
     pygame.display.flip()
-    clock.tick(50)
+    clock.tick(30)
 
 
 
