@@ -63,7 +63,6 @@ martelosom.set_volume(0.05)
 
 CHARACTER_IMG=pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
 CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-
 CHARACTER_STAND_IMG_RIGHT = pygame.image.load('imagens\sprite_mario_direita.png').convert_alpha()
 CHARACTER_STAND_IMG_RIGHT = pygame.transform.scale(CHARACTER_STAND_IMG_RIGHT, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 CHARACTER_STAND_IMG_LEFT = pygame.image.load('imagens\sprite_mario_esquerda.png').convert_alpha()
@@ -76,12 +75,10 @@ CHARACTER_IMG_UP = pygame.image.load('imagens\sprite_mario_subindo.png').convert
 CHARACTER_IMG_UP =  pygame.transform.scale(CHARACTER_IMG_UP, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 CHARACTER_IMG_DOWN = pygame.image.load('imagens\sprite_mario_descendo.png').convert_alpha()
 CHARACTER_IMG_DOWN =  pygame.transform.scale(CHARACTER_IMG_DOWN, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
-
 CHARACTER_HAMMER_LEFT = pygame.image.load('imagens\sprite_martelo_esquerdo.png')
 CHARACTER_HAMMER_LEFT = pygame.transform.scale(CHARACTER_HAMMER_LEFT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT)).convert_alpha()
 CHARACTER_HAMMER_RIGHT = pygame.image.load('imagens\sprite_martelo_direito.png').convert_alpha()
 CHARACTER_HAMMER_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_RIGHT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT))
-
 CHARACTER_HAMMER_UP_LEFT = pygame.image.load('imagens\sprite_martelo_cima_direita.png').convert_alpha()
 CHARACTER_HAMMER_UP_LEFT = pygame.transform.scale(CHARACTER_HAMMER_UP_LEFT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT)).convert_alpha()
 CHARACTER_HAMMER_UP_RIGHT = pygame.image.load('imagens\sprite_Mmartelo_cima_direita.png').convert_alpha()
@@ -89,16 +86,12 @@ CHARACTER_HAMMER_UP_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_UP_RIGHT, (C
 
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
 BARRIL_IMG=pygame.transform.scale(BARRIL_IMG, (BARREL_WIDTH,BARREL_HEIGHT))
-
 BARRIL_EXPLODE=pygame.image.load('imagens\explosion.png').convert_alpha()
 BARRIL_EXPLODE=pygame.transform.scale(BARRIL_EXPLODE, (BARREL_WIDTH,BARREL_HEIGHT))
-
 BARRIL_IMG_D_BAIXO=pygame.image.load('imagens/sprite_barril_direita_baixo.png').convert_alpha()
 BARRIL_IMG_D_BAIXO=pygame.transform.scale(BARRIL_IMG_D_BAIXO, (BARREL_WIDTH,BARREL_HEIGHT))
-
 BARRIL_IMG_D_CIMA=pygame.image.load('imagens/sprite_barril_direita_cima.png').convert_alpha()
 BARRIL_IMG_D_CIMA=pygame.transform.scale(BARRIL_IMG_D_CIMA, (BARREL_WIDTH,BARREL_HEIGHT))
-
 BARRIL_IMG_E_BAIXO=pygame.image.load('imagens/sprite_barril_esquerda_baixo.png').convert_alpha()
 BARRIL_IMG_E_BAIXO=pygame.transform.scale(BARRIL_IMG_E_BAIXO, (BARREL_WIDTH,BARREL_HEIGHT))
 
@@ -108,25 +101,20 @@ STAIR_IMG=pygame.transform.scale(STAIR_IMG, (STAIR_WIDTH, STAIR_HEIGHT))
 
 PLATFORM_IMG=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
 PLATFORM_IMG=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH, PLATFORM_HEIGHT))
-
 PLATFORM_IMG_i=pygame.image.load('imagens/sprite_chao.png').convert_alpha()
 PLATFORM_IMG_i=pygame.transform.scale(PLATFORM_IMG, (PLATFORM_WIDTH+70, PLATFORM_HEIGHT+15))
 
 FOGO_IMG = pygame.image.load('imagens/sprite_fire.png').convert_alpha()
 FOGO_IMG = pygame.transform.scale(FOGO_IMG, ( FOGO_WIDTH, FOGO_HEIGHT))
-
 FOGO_IMG2 = pygame.image.load('imagens/sprite_fogo2.png').convert_alpha()
 FOGO_IMG2 = pygame.transform.scale(FOGO_IMG2, ( FOGO_WIDTH, FOGO_HEIGHT))
-
 FOGO_IMG3 = pygame.image.load('imagens/sprite_fogo3.png').convert_alpha()
 FOGO_IMG3 = pygame.transform.scale(FOGO_IMG3, ( FOGO_WIDTH, FOGO_HEIGHT))
 
 DK_IMG=pygame.image.load('imagens/sprite_dk_jogando.png').convert_alpha()
 DK_IMG=pygame.transform.scale(DK_IMG, (DK_WIDTH-10, DK_HEIGHT-10))
-
 DK_IMG_DIREITA=pygame.image.load('imagens/sprite_dk_bravo_direita.png').convert_alpha()
 DK_IMG_DIREITA=pygame.transform.scale(DK_IMG_DIREITA, (DK_WIDTH, DK_HEIGHT))
-
 DK_IMG_ESQUERDA=pygame.image.load('imagens/sprite_dk_bravo_esquerda.png').convert_alpha()
 DK_IMG_ESQUERDA=pygame.transform.scale(DK_IMG_ESQUERDA, (DK_WIDTH, DK_HEIGHT))
 
@@ -152,6 +140,7 @@ def reset_game():
     character.equiped= False
     spawn_interval = 100
     martelo.rect.x = 820
+    hitbarrell = False
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
 class Platform(pygame.sprite.Sprite):
@@ -384,13 +373,10 @@ class Barrel(pygame.sprite.Sprite):
     def __init__(self, x, y,width, height, img):
 
         pygame.sprite.Sprite.__init__(self)
-
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
         self.speed =-4
         self.y_velocity = 0
-
-
         self.i=0
         self.ultima_i=0
 
@@ -437,7 +423,12 @@ class Martelo(pygame.sprite.Sprite):
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
 
-
+class barrelhit(pygame.sprite.Sprite):
+    def __init__(self, x, y,width, height):
+        pygame.sprite.Sprite.__init__(self)
+        self.rect = pygame.Rect(x, y, width, height)
+        self.image= BARRIL_EXPLODE
+    
 
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, x, y,width, height):
@@ -449,11 +440,12 @@ class Explosion(pygame.sprite.Sprite):
         self.last_update=2000
 
         def update(self):        
-        
+            
+            
+
             now = pygame.time.get_ticks()
 
             elapsed_ticks = now - self.last_update
-
             if elapsed_ticks > self.frame_ticks:
 
                 self.last_update = now
@@ -495,6 +487,9 @@ character = Character(CHARACTER_X,CHARACTER_Y,CHARACTER_WIDTH,CHARACTER_HEIGHT,C
 DK= Enemy( WIDTH-(DK_WIDTH+20) , 20 ,DK_WIDTH, DK_HEIGHT, DK_IMG)
 fogo = fogo (CHARACTER_X-60, CHARACTER_Y-70 ,FOGO_WIDTH, FOGO_HEIGHT, FOGO_IMG)
 martelo = Martelo(820, 470, MARTELO_WIDTH, MARTELO_HEIGHT, MARTELO_IMG)
+#x_barrilquebrado = barrel.rect.x
+#x_barrilquebrado = barrel.rect.y
+#barrelhit = barrelhit(x_barrilquebrado, y_barrilquebrado, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
 listamartelo=pygame.sprite.Group()
 listamartelo.add(martelo)
 gravity = 0.4
@@ -504,7 +499,7 @@ clock = pygame.time.Clock()
 
 ultimo_barril= 0
 game_over = False
-
+hitbarrel = False
 
 
 pygame.mixer.music.play(loops=-1)
@@ -541,16 +536,21 @@ while running:
             barrel.update()
             screen.blit(barrel.image, barrel.rect)
 
-
+# ==============================================colisao baril e mario ===================================
         for barrel in barrels:
             if character.rect.colliderect(barrel.rect):
                 if not character.hit:
                     game_over = True
                 else:
                     martelosom.play()
+                    barrel.image = BARRIL_EXPLODE
+                    #x_barrilquebrado = barrel.rect.x
+                    #x_barrilquebrado = barrel.rect.y
+                    barrel.rect.y = 10000000
+                    #screen.blit(barrelhit.image)
+                    hitbarrel = True
                     break
-            if barrel.rect.colliderect(fogo.rect):
-                print('dfjkd')
+            if barrel.rect.colliderect(fogo.rect) :
                 Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT)
                 Explosao.update()
                 screen.blit(Explosao.image, Explosao.rect)
@@ -563,7 +563,6 @@ while running:
         spawn_interval = random.randint(2000, 3500)
         tempo=pygame.time.get_ticks()
         intervalo= tempo - ultimo_barril
-
         if intervalo >= spawn_interval:
             DK.i=0
             ultimo_barril=tempo
