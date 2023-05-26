@@ -82,7 +82,9 @@ CHARACTER_HAMMER_LEFT = pygame.transform.scale(CHARACTER_HAMMER_LEFT, (CHARACTER
 CHARACTER_HAMMER_RIGHT = pygame.image.load('imagens\sprite_martelo_direito.png').convert_alpha()
 CHARACTER_HAMMER_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_RIGHT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT))
 
-CHARACTER_HAMMER_UP_RIGHT = pygame.image.load('imagens\sprite_martelo_cima_direita.png').convert_alpha()
+CHARACTER_HAMMER_UP_LEFT = pygame.image.load('imagens\sprite_martelo_cima_direita.png').convert_alpha()
+CHARACTER_HAMMER_UP_LEFT = pygame.transform.scale(CHARACTER_HAMMER_UP_LEFT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT)).convert_alpha()
+CHARACTER_HAMMER_UP_RIGHT = pygame.image.load('imagens\sprite_Mmartelo_cima_direita.png').convert_alpha()
 CHARACTER_HAMMER_UP_RIGHT = pygame.transform.scale(CHARACTER_HAMMER_UP_RIGHT, (CHARACTER_WIDTH+30,CHARACTER_HEIGHT)).convert_alpha()
 
 BARRIL_IMG=pygame.image.load('imagens/sprite_barril.png').convert_alpha()
@@ -284,9 +286,11 @@ class Character(pygame.sprite.Sprite):
         # ----- Verifica consequências
         #if event.type == pygame.KEYUP:
         #====================================== COM MARTELO ============================================================================
-
         if self.equiped==True:
-            self.image=CHARACTER_HAMMER_UP_RIGHT
+            if self.last_key == 'left':
+                self.image=CHARACTER_HAMMER_UP_LEFT
+            elif self.last_key == 'right':
+                self.image=CHARACTER_HAMMER_UP_RIGHT
             if keys[pygame.K_p]:
                 self.hit = True
                 if self.last_key == 'left':
@@ -310,7 +314,7 @@ class Character(pygame.sprite.Sprite):
             if keys[pygame.K_p]:
                 self.hit = True
                 if self.last_key == 'left':
-                    self.image=CHARACTER_HAMMER_UP_RIGHT
+                    self.image=CHARACTER_HAMMER_LEFT  
             
                 elif self.last_key == 'right':
                     self.image = CHARACTER_HAMMER_RIGHT    
