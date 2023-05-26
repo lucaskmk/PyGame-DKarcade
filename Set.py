@@ -422,12 +422,6 @@ class Martelo(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)      
         self.image=img
         self.rect = pygame.Rect(x, y, width, height)
-
-class barrelhit(pygame.sprite.Sprite):
-    def __init__(self, x, y,width, height):
-        pygame.sprite.Sprite.__init__(self)
-        self.rect = pygame.Rect(x, y, width, height)
-        self.image= BARRIL_EXPLODE
     
 
 class Explosion(pygame.sprite.Sprite):
@@ -538,20 +532,22 @@ while running:
                     game_over = True
                 else:
                     martelosom.play()
-                    barrel.rect.y = 10000000
                     Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
                     Explosao.update()
                     screen.blit(Explosao.image, Explosao.rect)
-                    time.sleep(0.1)
-                    #x_barrilquebrado = barrel.rect.x
-                    #x_barrilquebrado = barrel.rect.y
-                    #screen.blit(barrelhit.image)
+                    barrel.image = BARRIL_EXPLODE
+                    barrel.update()
+                    screen.blit(barrel.image, barrel.rect)
+
+                    time.sleep(0.3)
+                    barrel.rect.y = 10000000
                     hitbarrel = True
                     break
             if barrel.rect.colliderect(fogo.rect) :
                 Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
                 Explosao.update()
                 screen.blit(Explosao.image, Explosao.rect)
+                
                 barrel.velocity=0
                 barrel.rect.x = -10
                 barrel.rect.y = 10000000
@@ -599,5 +595,4 @@ while running:
 
 
 pygame.quit()
-
 
