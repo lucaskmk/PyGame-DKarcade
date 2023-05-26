@@ -595,7 +595,7 @@ while running:
         game_over_message()
 
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(50)
 
 
 
