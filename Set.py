@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import random
+import operator
 import time
 
 # Initialize Pygame
@@ -18,6 +19,9 @@ nplayer = 'Player'
 savedscore={}
 
 #Define measures
+LEADERBOARD_X =350
+LEADERBOARD_Y = 150
+
 
 WIDTH = 1000
 HEIGHT = 780
@@ -128,8 +132,38 @@ DK_IMG_ESQUERDA=pygame.transform.scale(DK_IMG_ESQUERDA, (DK_WIDTH, DK_HEIGHT))
 MARTELO_IMG=pygame.image.load('imagens/sprite_martelo.png').convert_alpha()
 MARTELO_IMG=pygame.transform.scale(MARTELO_IMG, (MARTELO_WIDTH, MARTELO_HEIGHT))
 
+
 def game_over_message():
     font = pygame.font.Font(None, 36)
+    sortedscore = dict( sorted(savedscore.items(), key=operator.itemgetter(1),reverse=True))
+    k = 0
+    if len(sortedscore) >= 3:
+        for player_n, score_n in sortedscore.items():
+            if k == 0:
+                top1 = font.render("Score: " + str(player_n) + '  :      ' + str(score_n), True, (255, 255, 255))
+            elif k == 1:
+                top2 = font.render("Score: " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
+            elif k == 2:
+                top3 = font.render("Score: " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
+            k +=1 
+        screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y))
+        screen.blit(top2, (LEADERBOARD_X, LEADERBOARD_Y+40))
+        screen.blit(top3, (LEADERBOARD_X, LEADERBOARD_Y+80))
+    elif len(sortedscore) == 2:
+        for player_n, score_n in sortedscore.items():
+            if k == 0:
+                top1 = font.render("Score:   " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
+            elif k == 1:
+                top2 = font.render("Score:   " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
+            k +=1 
+        screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y+40))
+        screen.blit(top2, (LEADERBOARD_X, LEADERBOARD_Y+80))
+    elif len(sortedscore) == 1:
+        for player_n, score_n in sortedscore.items():
+            if k == 0:
+                top1 = font.render("Score:   " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
+        screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y+80))
+    
     text = font.render("Game Over - Press any key to restart", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
