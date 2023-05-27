@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 import random
 import time
 
@@ -9,6 +10,12 @@ pygame.mixer.init()
 # Define colors
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
+# Define score
+font = pygame.font.Font(None, 36)
+score = 0
+np = 1
+nplayer = 'Player'
+savedscore={}
 
 #Define measures
 
@@ -211,6 +218,7 @@ class Character(pygame.sprite.Sprite):
 
         if self.on_stair: # se na escada so desenho da escada
             # Imagem escada
+
             if self.lastupdown_key == 'up' :
                 self.image = CHARACTER_IMG_UP
             elif self.lastupdown_key == 'down':
@@ -344,7 +352,7 @@ class Enemy(pygame.sprite.Sprite):
         self.ultima_i=0
     def update(self):
         agora=pygame.time.get_ticks()
-        if agora-self.ultima_i>=700:
+        if agora-self.ultima_i>=500:
             self.i+=1
             self.image=self.image_list[self.i % 3]
             self.ultima_i=agora
@@ -394,7 +402,12 @@ class Barrel(pygame.sprite.Sprite):
             self.image=self.image_list[self.i % 4]
             self.ultima_i=agora
 
+        if character.rect.colliderect(self.rect) or self.rect.colliderect(character.rect):
+                self.image = BARRIL_EXPLODE
+                
 
+                    
+                    
         for platform in PLATFORMS:
             if self.rect.colliderect(platform.rect):
                 self.rect.bottom = platform.rect.top
@@ -502,9 +515,7 @@ while running:
             if game_over:
                 reset_game()
             elif event.key == pygame.K_SPACE:
-
-
-                    character.jump()
+                character.jump()
                     
                 
  
@@ -529,32 +540,36 @@ while running:
         for barrel in barrels:
             if character.rect.colliderect(barrel.rect):
                 if not character.hit:
+                    savedscore[nplayer+str(np)] = score*100
+                    np += 1
+                    score = 0
+                    print(savedscore)
                     game_over = True
                 else:
+                    barrel.velocity=0
+                    barrel.y_velocity = 0
                     martelosom.play()
-                    Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
-                    Explosao.update()
-                    screen.blit(Explosao.image, Explosao.rect)
-                    barrel.image = BARRIL_EXPLODE
                     barrel.update()
                     screen.blit(barrel.image, barrel.rect)
-
-                    time.sleep(0.3)
-                    barrel.rect.y = 10000000
                     hitbarrel = True
+                    score += 1
+                    time.sleep(0.2)
+                    barrel.rect.y = 10000000
                     break
+                    
+                
             if barrel.rect.colliderect(fogo.rect) :
                 Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
                 Explosao.update()
                 screen.blit(Explosao.image, Explosao.rect)
-                
+                score+=1
                 barrel.velocity=0
                 barrel.rect.x = -10
                 barrel.rect.y = 10000000
                 barrel.y_velocity = 0
                 barrel.speed = 0
 
-        spawn_interval = random.randint(2000, 3500)
+        spawn_interval = random.randint(1500, 2000)
         tempo=pygame.time.get_ticks()
         intervalo= tempo - ultimo_barril
         if intervalo >= spawn_interval:
@@ -583,7 +598,10 @@ while running:
 
         martelo.update()
         listamartelo.draw(screen)
-
+        
+        score_text = font.render("Score: " + str(score*100), True, (255, 255, 255))
+        screen.blit(score_text, (10, 10))
+        pygame.display.update()
 
     else:
         game_over_message()
