@@ -182,6 +182,7 @@ def reset_game():
     spawn_interval = 100
     martelo.rect.x = 820
     hitbarrell = False
+    TIME = 0
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
 class Platform(pygame.sprite.Sprite):
@@ -539,6 +540,7 @@ hitbarrel = False
 
 
 pygame.mixer.music.play(loops=-1)
+TIME = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.KEYUP:
@@ -564,7 +566,13 @@ while running:
         screen.blit(platform.image, platform.rect)
 
 
-
+    if character.equiped:
+        TIME += 1
+        timewithammer = font.render("Tempo com Martelo :  " + str(600-TIME), True, (255, 255, 255))
+        screen.blit(timewithammer, (200, 10))
+    if TIME == 600:
+        character.equiped = False
+        TIME = 0
     if not game_over:
         for barrel in barrels:
             barrel.update()
@@ -572,6 +580,7 @@ while running:
 
 # ==============================================colisao baril e mario ===================================
         for barrel in barrels:
+
             if character.rect.colliderect(barrel.rect):
                 if not character.hit:
                     savedscore[nplayer+str(np)] = score*100
@@ -590,8 +599,9 @@ while running:
                     time.sleep(0.2)
                     barrel.rect.y = 10000000
                     break
-                    
-                
+            else:        
+                if (barrel.rect.y+6 > character.rect.y) and (barrel.rect.y-6 < character.rect.y) :
+                        score+=0.5
             if barrel.rect.colliderect(fogo.rect) :
                 Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
                 Explosao.update()
