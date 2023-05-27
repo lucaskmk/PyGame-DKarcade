@@ -561,7 +561,10 @@ while running:
     for stair in STAIRS:
         STAIR_IMG = pygame.Surface.set_colorkey(stair.image, (0,0,0))
         screen.blit(stair.image, stair.rect)
-
+        #ganhouu        for stair in STAIRS:
+        if character.rect.colliderect(stair.rect):     
+            if character.rect.y <= 50:
+                game_over = True
     for platform in PLATFORMS:
         screen.blit(platform.image, platform.rect)
 
@@ -577,6 +580,7 @@ while running:
         for barrel in barrels:
             barrel.update()
             screen.blit(barrel.image, barrel.rect)
+            
 
 # ==============================================colisao baril e mario ===================================
         for barrel in barrels:
