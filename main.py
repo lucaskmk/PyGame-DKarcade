@@ -39,11 +39,11 @@ martelosom.set_volume(0.05)
 
 def game_over_message():
     font = pygame.font.Font(None, 36)
-    if score > savedscore["Top 2"] and score > savedscore["Top 3"]:
+    if score > int(savedscore["Top 2"]) and score > int(savedscore["Top 3"]):
         savedscore["Top 1"] = score
-    elif score > savedscore["Top 3"]:
+    elif score > int(savedscore["Top 3"]):
         savedscore["Top 2"] = score
-    elif score > savedscore["Top 3"]:
+    elif score > int(savedscore["Top 3"]):
         savedscore["Top 3"] = score
     top1 = font.render("Score: " + str(savedscore[0]) + '  :      ' + str(savedscore["Top 1"]), True, (255, 255, 255))
     top2 = font.render("Score: " + str(savedscore[1]) + '  :      ' +  str(savedscore["Top 2"]), True, (255, 255, 255))
