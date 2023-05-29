@@ -39,35 +39,20 @@ martelosom.set_volume(0.05)
 
 def game_over_message():
     font = pygame.font.Font(None, 36)
-    sortedscore = dict( sorted(savedscore.items(), key=operator.itemgetter(1),reverse=True))
-    k = 0
-    if len(sortedscore) >= 3:
-        for player_n, score_n in sortedscore.items():
-            if k == 0:
-                top1 = font.render("Score: " + str(player_n) + '  :      ' + str(score_n), True, (255, 255, 255))
-            elif k == 1:
-                top2 = font.render("Score: " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
-            elif k == 2:
-                top3 = font.render("Score: " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
-            k +=1 
-        screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y))
-        screen.blit(top2, (LEADERBOARD_X, LEADERBOARD_Y+40))
-        screen.blit(top3, (LEADERBOARD_X, LEADERBOARD_Y+80))
-    elif len(sortedscore) == 2:
-        for player_n, score_n in sortedscore.items():
-            if k == 0:
-                top1 = font.render("Score:   " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
-            elif k == 1:
-                top2 = font.render("Score:   " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
-            k +=1 
-        screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y+40))
-        screen.blit(top2, (LEADERBOARD_X, LEADERBOARD_Y+80))
-    elif len(sortedscore) == 1:
-        for player_n, score_n in sortedscore.items():
-            if k == 0:
-                top1 = font.render("Score:   " + str(player_n) + '  :      ' +  str(score_n), True, (255, 255, 255))
-        screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y+80))
-    
+    if score > savedscore["Top 2"] and score > savedscore["Top 3"]:
+        savedscore["Top 1"] = score
+    elif score > savedscore["Top 3"]:
+        savedscore["Top 2"] = score
+    elif score > savedscore["Top 3"]:
+        savedscore["Top 3"] = score
+    top1 = font.render("Score: " + str(savedscore[0]) + '  :      ' + str(savedscore["Top 1"]), True, (255, 255, 255))
+    top2 = font.render("Score: " + str(savedscore[1]) + '  :      ' +  str(savedscore["Top 2"]), True, (255, 255, 255))
+    top3 = font.render("Score: " + str(savedscore[2]) + '  :      ' +  str(savedscore["Top 3"]), True, (255, 255, 255))
+    screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y))
+    screen.blit(top2, (LEADERBOARD_X, LEADERBOARD_Y+40))
+    screen.blit(top3, (LEADERBOARD_X, LEADERBOARD_Y+80))
+        
+        
     text = font.render("Game Over - Press any key to restart", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
