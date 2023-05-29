@@ -67,8 +67,6 @@ martelosom.set_volume(0.05)
 
 
 
-# Create barrels
-
 
 #images
 
