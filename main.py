@@ -45,9 +45,9 @@ def game_over_message():
         savedscore["Top 2"] = score
     elif score > int(savedscore["Top 3"]):
         savedscore["Top 3"] = score
-    top1 = font.render("Score: " + str(savedscore[0]) + '  :      ' + str(savedscore["Top 1"]), True, (255, 255, 255))
-    top2 = font.render("Score: " + str(savedscore[1]) + '  :      ' +  str(savedscore["Top 2"]), True, (255, 255, 255))
-    top3 = font.render("Score: " + str(savedscore[2]) + '  :      ' +  str(savedscore["Top 3"]), True, (255, 255, 255))
+    top1 = font.render("Score: " + str("Top 1") + '  :      ' + str(savedscore["Top 1"]), True, (255, 255, 255))
+    top2 = font.render("Score: " + str("Top 2") + '  :      ' +  str(savedscore["Top 2"]), True, (255, 255, 255))
+    top3 = font.render("Score: " + str("Top 3") + '  :      ' +  str(savedscore["Top 3"]), True, (255, 255, 255))
     screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y))
     screen.blit(top2, (LEADERBOARD_X, LEADERBOARD_Y+40))
     screen.blit(top3, (LEADERBOARD_X, LEADERBOARD_Y+80))
