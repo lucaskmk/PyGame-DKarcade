@@ -45,7 +45,7 @@ def game_over_message():
         savedscore["Top 2"] = score
     elif score > int(savedscore["Top 3"]):
         savedscore["Top 3"] = score
-    
+    print(score)
     print(savedscore)
         
     
@@ -483,6 +483,7 @@ while running:
 
             if character.rect.colliderect(barrel.rect):
                 if not character.hit:
+                    score = 0 # reiniciar core
                     game_over = True
                 else:
                     barrel.velocity=0
