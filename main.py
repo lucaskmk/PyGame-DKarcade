@@ -8,7 +8,9 @@ import time
 from settings import *
 from sprites import *
 
-with open('saves.json', 'r') as savedscore:
+with open('saves.json', 'r') as arq:
+    savedscore=arq.read()
+savedscore=json.loads(savedscore)
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()
