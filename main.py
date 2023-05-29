@@ -9,8 +9,8 @@ from settings import *
 from sprites import *
 
 with open('saves.json', 'r') as arq:
-    savedscore=arq.read()
-savedscore=json.loads(savedscore)
+    savedscores=arq.read()
+savedscore=json.loads(savedscores)
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()
@@ -48,6 +48,9 @@ def game_over_message():
     top1 = font.render("Score: " + str("Top 1") + '  :      ' + str(savedscore["Top 1"]), True, (255, 255, 255))
     top2 = font.render("Score: " + str("Top 2") + '  :      ' +  str(savedscore["Top 2"]), True, (255, 255, 255))
     top3 = font.render("Score: " + str("Top 3") + '  :      ' +  str(savedscore["Top 3"]), True, (255, 255, 255))
+    
+    
+    
     screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y))
     screen.blit(top2, (LEADERBOARD_X, LEADERBOARD_Y+40))
     screen.blit(top3, (LEADERBOARD_X, LEADERBOARD_Y+80))
@@ -56,7 +59,7 @@ def game_over_message():
     text = font.render("Game Over - Press any key to restart", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
-
+    
 # Reset the game state
 def reset_game():
     global game_over
