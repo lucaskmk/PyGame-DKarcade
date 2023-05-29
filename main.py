@@ -8,9 +8,6 @@ import time
 from settings import *
 from sprites import *
 
-with open('saves.json', 'r') as arq:
-    savedscores=arq.read()
-savedscore=json.loads(savedscores)
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()
@@ -37,18 +34,12 @@ pulo.set_volume(0.05)
 martelosom=pygame.mixer.Sound('sound/martelo.mp3')
 martelosom.set_volume(0.05)
 
-def game_over_message():
+
+def game_over_message(savedscore):
+
     font = pygame.font.Font(None, 36)
-    if score > int(savedscore["Top 1"]):
-        savedscore["Top 1"] = score
-    elif score > int(savedscore["Top 2"]):
-        savedscore["Top 2"] = score
-    elif score > int(savedscore["Top 3"]):
-        savedscore["Top 3"] = score
-    print(score)
-    print(savedscore)
-        
-    
+   
+
     top1 = font.render("Score: " + str("Top 1") + '  :      ' + str(savedscore["Top 1"]), True, (255, 255, 255))
     top2 = font.render("Score: " + str("Top 2") + '  :      ' +  str(savedscore["Top 2"]), True, (255, 255, 255))
     top3 = font.render("Score: " + str("Top 3") + '  :      ' +  str(savedscore["Top 3"]), True, (255, 255, 255))
@@ -63,7 +54,8 @@ def game_over_message():
     text = font.render("Game Over - Press any key to restart", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
-    
+  
+
 # Reset the game state
 def reset_game():
     global game_over
@@ -79,6 +71,8 @@ def reset_game():
     martelo.rect.x = 820
     hitbarrell = False
     TIME = 0
+    score = 0   
+    Mensage=True
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
 class Platform(pygame.sprite.Sprite):
@@ -437,6 +431,7 @@ hitbarrel = False
 
 pygame.mixer.music.play(loops=-1)
 TIME = 0
+Mensage = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.KEYUP:
@@ -483,7 +478,7 @@ while running:
 
             if character.rect.colliderect(barrel.rect):
                 if not character.hit:
-                    score = 0 # reiniciar core
+                    novovalor=score
                     game_over = True
                 else:
                     barrel.velocity=0
@@ -492,13 +487,14 @@ while running:
                     barrel.update()
                     screen.blit(barrel.image, barrel.rect)
                     hitbarrel = True
-                    score += 1
+                    score += 100
+  
                     time.sleep(0.2)
                     barrel.rect.y = 10000000
                     break
             else:        
                 if (barrel.rect.y+6 > character.rect.y) and (barrel.rect.y-6 < character.rect.y) :
-                        score+=0.5
+                        score+=50
             if barrel.rect.colliderect(fogo.rect) :
                 Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
                 Explosao.update()
@@ -540,12 +536,41 @@ while running:
         martelo.update()
         listamartelo.draw(screen)
         
-        score_text = font.render("Score: " + str(score*100), True, (255, 255, 255))
+        score_text = font.render("Score: " + str(score), True, (255, 255, 255))
         screen.blit(score_text, (10, 10))
         pygame.display.update()
 
     else:
-        game_over_message()
+
+        if Mensage==True:
+            atualiza=True    
+            with open('saves.json', 'r') as arq:
+                savedscores=arq.read()
+            savedscore=json.loads(savedscores)
+
+            if novovalor > int(savedscore["Top 1"]):
+                print('1')
+                novodic = {"Top 1":novovalor, "Top 2": savedscore["Top 1"], "Top 3": savedscore["Top 2"]}
+            elif novovalor > int(savedscore["Top 2"]):
+                print('2')
+                novodic = {"Top 1": savedscore["Top 1"], "Top 2":novovalor, "Top 3": savedscore["Top 2"]}
+            elif novovalor > int(savedscore["Top 3"]):
+                print('3')
+                novodic = {"Top 1": savedscore["Top 1"],"Top 2": savedscore["Top 2"], "Top 3": novovalor }
+            else:
+                atualiza=False
+                print('else')
+
+            if atualiza:
+
+                novojson = json.dumps(novodic)
+
+                with open('saves.json', 'w') as arq:
+                    arq.write(novojson)
+
+            Mensage=False
+        game_over_message(novodic)
+
 
     pygame.display.flip()
     clock.tick(50)
