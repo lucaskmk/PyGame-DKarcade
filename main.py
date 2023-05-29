@@ -39,12 +39,16 @@ martelosom.set_volume(0.05)
 
 def game_over_message():
     font = pygame.font.Font(None, 36)
-    if score > int(savedscore["Top 2"]) and score > int(savedscore["Top 3"]):
+    if score > int(savedscore["Top 1"]):
         savedscore["Top 1"] = score
-    elif score > int(savedscore["Top 3"]):
+    elif score > int(savedscore["Top 2"]):
         savedscore["Top 2"] = score
     elif score > int(savedscore["Top 3"]):
         savedscore["Top 3"] = score
+    
+    print(savedscore)
+        
+    
     top1 = font.render("Score: " + str("Top 1") + '  :      ' + str(savedscore["Top 1"]), True, (255, 255, 255))
     top2 = font.render("Score: " + str("Top 2") + '  :      ' +  str(savedscore["Top 2"]), True, (255, 255, 255))
     top3 = font.render("Score: " + str("Top 3") + '  :      ' +  str(savedscore["Top 3"]), True, (255, 255, 255))
@@ -479,10 +483,6 @@ while running:
 
             if character.rect.colliderect(barrel.rect):
                 if not character.hit:
-                    savedscore[nplayer+str(np)] = score*100
-                    np += 1
-                    score = 0
-                    print(savedscore)
                     game_over = True
                 else:
                     barrel.velocity=0
