@@ -54,7 +54,7 @@ def game_over_message(savedscore):
     text = font.render("Game Over - Press any key to restart", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
-  
+    
 
 # Reset the game state
 def reset_game():
@@ -72,6 +72,7 @@ def reset_game():
     hitbarrell = False
     TIME = 0
     score = 0   
+    atualiza=True 
     Mensage=True
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
@@ -558,18 +559,17 @@ while running:
                 print('3')
                 novodic = {"Top 1": savedscore["Top 1"],"Top 2": savedscore["Top 2"], "Top 3": novovalor }
             else:
+                novodic = {"Top 1": savedscore["Top 1"],"Top 2": savedscore["Top 2"], "Top 3": savedscore["Top 3"] }
                 atualiza=False
                 print('else')
 
             if atualiza:
-
                 novojson = json.dumps(novodic)
-
                 with open('saves.json', 'w') as arq:
                     arq.write(novojson)
-
             Mensage=False
         game_over_message(novodic)
+        score = 0
 
 
     pygame.display.flip()
