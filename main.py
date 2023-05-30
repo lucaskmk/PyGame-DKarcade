@@ -34,27 +34,41 @@ pulo.set_volume(0.05)
 martelosom=pygame.mixer.Sound('sound/martelo.mp3')
 martelosom.set_volume(0.05)
 
+def start_screen(): #TELA DE INICIO
+    screen.fill(BLACK)
+    
+    # Display title text
+    font = pygame.font.Font(None, 48)
+    text = font.render("Game Title", True, WHITE)
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+    screen.blit(text, text_rect)
+    
+    # Display play button
+    play_button = pygame.Rect(WIDTH // 2 - 75, HEIGHT // 2 + 50, 150, 50)
+    pygame.draw.rect(screen, WHITE, play_button)
+    font = pygame.font.Font(None, 36)
+    text = font.render("Play", True, BLACK)
+    text_rect = text.get_rect(center=play_button.center)
+    screen.blit(text, text_rect)
+    
+    pygame.display.flip()
+    
 
 def game_over_message(savedscore):
 
     font = pygame.font.Font(None, 36)
-   
 
     top1 = font.render("Score: " + str("Top 1") + '  :      ' + str(savedscore["Top 1"]), True, (255, 255, 255))
     top2 = font.render("Score: " + str("Top 2") + '  :      ' +  str(savedscore["Top 2"]), True, (255, 255, 255))
     top3 = font.render("Score: " + str("Top 3") + '  :      ' +  str(savedscore["Top 3"]), True, (255, 255, 255))
-    
-    
-    
+
     screen.blit(top1, (LEADERBOARD_X, LEADERBOARD_Y))
     screen.blit(top2, (LEADERBOARD_X, LEADERBOARD_Y+40))
     screen.blit(top3, (LEADERBOARD_X, LEADERBOARD_Y+80))
-        
-        
+ 
     text = font.render("Game Over - Press any key to restart", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
-    
 
 # Reset the game state
 def reset_game():
@@ -72,8 +86,11 @@ def reset_game():
     hitbarrell = False
     TIME = 0
     score = 0   
+    tempframes = 0
+    jogoinit = False
     atualiza=True 
     Mensage=True
+    screeninit = True
     barrels.clear()
 # ========================== | Class | =================================================================================================================================================
 class Platform(pygame.sprite.Sprite):
@@ -428,15 +445,27 @@ clock = pygame.time.Clock()
 ultimo_barril= 0
 game_over = False
 hitbarrel = False
-
+play_button = pygame.Rect(WIDTH // 2 - 75, HEIGHT // 2 + 50, 150, 50)
+jogoinit = False
+tempframes = 0
 
 pygame.mixer.music.play(loops=-1)
 TIME = 0
 Mensage = True
+screeninit = True
 while running:
+    if screeninit:
+        start_screen()
     for event in pygame.event.get():
         if event.type == pygame.KEYUP:
             character.hit = False
+        elif event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                if play_button.collidepoint(mouse_pos):
+                    jogoinit = True 
+                    screeninit = False
+                              
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
@@ -448,135 +477,137 @@ while running:
                 
  
 
-    screen.fill((0, 0, 0))
 
-    for stair in STAIRS:
-        STAIR_IMG = pygame.Surface.set_colorkey(stair.image, (0,0,0))
-        screen.blit(stair.image, stair.rect)
-        #ganhouu        for stair in STAIRS:
-        if character.rect.colliderect(stair.rect):     
-            if character.rect.y <= 50:
-                game_over = True
-    for platform in PLATFORMS:
-        screen.blit(platform.image, platform.rect)
-
-
-    if character.equiped:
-        TIME += 1
-        timewithammer = font.render("Tempo com Martelo :  " + str(600-TIME), True, (255, 255, 255))
-        screen.blit(timewithammer, (200, 10))
-    if TIME == 600:
-        character.equiped = False
-        TIME = 0
-    if not game_over:
-        for barrel in barrels:
-            barrel.update()
-            screen.blit(barrel.image, barrel.rect)
-            
-
-# ==============================================colisao baril e mario ===================================
-        for barrel in barrels:
-
-            if character.rect.colliderect(barrel.rect):
-                if not character.hit:
-                    novovalor=score
-                    game_over = True
-                else:
-                    barrel.velocity=0
-                    barrel.y_velocity = 0
-                    martelosom.play()
-                    barrel.update()
-                    screen.blit(barrel.image, barrel.rect)
-                    hitbarrel = True
-                    score += 100
-  
-                    time.sleep(0.2)
-                    barrel.rect.y = 10000000
-                    break
-            else:        
-                if (barrel.rect.y+6 > character.rect.y) and (barrel.rect.y-6 < character.rect.y) :
-                        score+=50
-            if barrel.rect.colliderect(fogo.rect) :
-                Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
-                Explosao.update()
-                screen.blit(Explosao.image, Explosao.rect)
-                score+=1
-                barrel.velocity=0
-                barrel.rect.x = -10
-                barrel.rect.y = 10000000
-                barrel.y_velocity = 0
-                barrel.speed = 0
-
-        spawn_interval = random.randint(1500, 2000)
-        tempo=pygame.time.get_ticks()
-        intervalo= tempo - ultimo_barril
-        if intervalo >= spawn_interval:
-            DK.i=0
-            ultimo_barril=tempo
-            x = WIDTH-160
-            y = 150
-            barrel = Barrel(x, y, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
-            barrels.append(barrel)
-
-            
-
-        if character.rect.colliderect(martelo.rect):
-            martelo.rect.x = 1200
-            character.equiped= True
-            
-
-        character.update()
-        screen.blit(character.image, character.rect)
-
-        DK.update()
-        screen.blit(DK.image, DK.rect)
-
-        fogo.update()
-        screen.blit(fogo.image, fogo.rect)
-
-        martelo.update()
-        listamartelo.draw(screen)
+    if jogoinit:
         
-        score_text = font.render("Score: " + str(score), True, (255, 255, 255))
-        screen.blit(score_text, (10, 10))
-        pygame.display.update()
+        screen.fill((0, 0, 0)) 
+        for stair in STAIRS:
+            STAIR_IMG = pygame.Surface.set_colorkey(stair.image, (0,0,0))
+            screen.blit(stair.image, stair.rect)
+            #ganhouu        for stair in STAIRS:
+            if character.rect.colliderect(stair.rect):     
+                if character.rect.y <= 50:
+                    game_over = True
+        for platform in PLATFORMS:
+            screen.blit(platform.image, platform.rect)
 
-    else:
 
-        if Mensage==True:
-            atualiza=True    
-            with open('saves.json', 'r') as arq:
-                savedscores=arq.read()
-            savedscore=json.loads(savedscores)
+        if character.equiped:
+            tempframes += 1
+            if tempframes >= 50:
+                TIME+=1
+                tempframes = 0
+            timewithammer = font.render("Tempo com Martelo :  " + str(7-TIME), True, (255, 255, 255))
+            screen.blit(timewithammer, (200, 10))
+        if TIME == 7:
+            character.equiped = False
+            TIME = 0
+        if not game_over:
+            for barrel in barrels:
+                barrel.update()
+                screen.blit(barrel.image, barrel.rect)
+                
 
-            if novovalor > int(savedscore["Top 1"]):
-                print('1')
-                novodic = {"Top 1":novovalor, "Top 2": savedscore["Top 1"], "Top 3": savedscore["Top 2"]}
-            elif novovalor > int(savedscore["Top 2"]):
-                print('2')
-                novodic = {"Top 1": savedscore["Top 1"], "Top 2":novovalor, "Top 3": savedscore["Top 2"]}
-            elif novovalor > int(savedscore["Top 3"]):
-                print('3')
-                novodic = {"Top 1": savedscore["Top 1"],"Top 2": savedscore["Top 2"], "Top 3": novovalor }
-            else:
-                novodic = {"Top 1": savedscore["Top 1"],"Top 2": savedscore["Top 2"], "Top 3": savedscore["Top 3"] }
-                atualiza=False
-                print('else')
+    # ==============================================colisao baril e mario ===================================
+            for barrel in barrels:
 
-            if atualiza:
-                novojson = json.dumps(novodic)
-                with open('saves.json', 'w') as arq:
-                    arq.write(novojson)
-            Mensage=False
-        game_over_message(novodic)
-        score = 0
+                if character.rect.colliderect(barrel.rect):
+                    if not character.hit:
+                        novovalor=score
+                        game_over = True
+                    else:
+                        barrel.velocity=0
+                        barrel.y_velocity = 0
+                        martelosom.play()
+                        barrel.update()
+                        screen.blit(barrel.image, barrel.rect)
+                        hitbarrel = True
+                        score += 100
+    
+                        time.sleep(0.2)
+                        barrel.rect.y = 10000000
+                        break
+                else:        
+                    if (barrel.rect.y+6 > character.rect.y) and (barrel.rect.y-6 < character.rect.y) :
+                            score+=50
+                if barrel.rect.colliderect(fogo.rect) :
+                    Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
+                    Explosao.update()
+                    screen.blit(Explosao.image, Explosao.rect)
+                    score+=1
+                    barrel.velocity=0
+                    barrel.rect.x = -10
+                    barrel.rect.y = 10000000
+                    barrel.y_velocity = 0
+                    barrel.speed = 0
+
+            spawn_interval = random.randint(1500, 2000)
+            tempo=pygame.time.get_ticks()
+            intervalo= tempo - ultimo_barril
+            if intervalo >= spawn_interval:
+                DK.i=0
+                ultimo_barril=tempo
+                x = WIDTH-160
+                y = 150
+                barrel = Barrel(x, y, BARREL_WIDTH, BARREL_HEIGHT, BARRIL_IMG)
+                barrels.append(barrel)
+
+                
+
+            if character.rect.colliderect(martelo.rect):
+                martelo.rect.x = 1200
+                character.equiped= True
+                
+
+            character.update()
+            screen.blit(character.image, character.rect)
+
+            DK.update()
+            screen.blit(DK.image, DK.rect)
+
+            fogo.update()
+            screen.blit(fogo.image, fogo.rect)
+
+            martelo.update()
+            listamartelo.draw(screen)
+            
+            score_text = font.render("Score: " + str(score), True, (255, 255, 255))
+            screen.blit(score_text, (10, 10))
+            pygame.display.update()
+
+        else:
+
+            if Mensage==True:
+                atualiza=True    
+                with open('saves.json', 'r') as arq:
+                    savedscores=arq.read()
+                savedscore=json.loads(savedscores)
+
+                if novovalor > int(savedscore["Top 1"]):
+                    print('1')
+                    novodic = {"Top 1":novovalor, "Top 2": savedscore["Top 1"], "Top 3": savedscore["Top 2"]}
+                elif novovalor > int(savedscore["Top 2"]):
+                    print('2')
+                    novodic = {"Top 1": savedscore["Top 1"], "Top 2":novovalor, "Top 3": savedscore["Top 2"]}
+                elif novovalor > int(savedscore["Top 3"]):
+                    print('3')
+                    novodic = {"Top 1": savedscore["Top 1"],"Top 2": savedscore["Top 2"], "Top 3": novovalor }
+                else:
+                    novodic = {"Top 1": savedscore["Top 1"],"Top 2": savedscore["Top 2"], "Top 3": savedscore["Top 3"] }
+                    atualiza=False
+                    print('else')
+
+                if atualiza:
+                    novojson = json.dumps(novodic)
+                    with open('saves.json', 'w') as arq:
+                        arq.write(novojson)
+                Mensage=False
+            game_over_message(novodic)
+            score = 0
+            
 
 
     pygame.display.flip()
     clock.tick(50)
-
-
-
-
 pygame.quit()
 
