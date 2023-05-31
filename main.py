@@ -487,6 +487,7 @@ while running:
             #ganhouu        for stair in STAIRS:
             if character.rect.colliderect(stair.rect):     
                 if character.rect.y <= 50:
+                    score += 500
                     game_over = True
         for platform in PLATFORMS:
             screen.blit(platform.image, platform.rect)
@@ -533,7 +534,7 @@ while running:
                     Explosao=Explosion(barrel.rect.x, barrel.rect.y, BARREL_WIDTH, BARREL_HEIGHT,BARRIL_EXPLODE)
                     Explosao.update()
                     screen.blit(Explosao.image, Explosao.rect)
-                    score+=1
+                    score+=10
                     barrel.velocity=0
                     barrel.rect.x = -10
                     barrel.rect.y = 10000000
