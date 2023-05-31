@@ -81,8 +81,8 @@ def reset_game():
     character.on_ground = True
     character.on_stair = False
     character.equiped= False
-    spawn_interval = 100
     martelo.rect.x = 820
+    spawn_interval = 100
     hitbarrell = False
     TIME = 0
     score = 0   
@@ -92,6 +92,7 @@ def reset_game():
     Mensage=True
     screeninit = True
     barrels.clear()
+    return screeninit, Mensage, atualiza, jogoinit, tempframes, score, TIME, hitbarrell, spawn_interval
 # ========================== | Class | =================================================================================================================================================
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, img):
@@ -441,7 +442,7 @@ gravity = 0.4
 
 running = True
 clock = pygame.time.Clock()
-
+finalscore = 0
 ultimo_barril= 0
 game_over = False
 hitbarrel = False
@@ -454,7 +455,7 @@ TIME = 0
 Mensage = True
 screeninit = True
 while running:
-    novovalor=score
+    
     if screeninit:
         start_screen()
     for event in pygame.event.get():
@@ -472,6 +473,10 @@ while running:
         elif event.type == pygame.KEYDOWN and not screeninit:
             if game_over:
                 reset_game()
+                print(score)
+                finalscore = score 
+                score = 0
+                Mensage=True
             elif event.key == pygame.K_SPACE:
                 character.jump()
                     
@@ -487,7 +492,7 @@ while running:
             #ganhouu        for stair in STAIRS:
             if character.rect.colliderect(stair.rect):     
                 if character.rect.y <= 50:
-                    novovalor += 500
+                    score += 500
                     game_over = True
         for platform in PLATFORMS:
             screen.blit(platform.image, platform.rect)
@@ -578,6 +583,9 @@ while running:
         else:
 
             if Mensage==True:
+                print(score, 'aaaaaaaaaaaaaaaaaaaaaaa')
+                print(finalscore)
+                novovalor=score
                 atualiza=True    
                 with open('saves.json', 'r') as arq:
                     savedscores=arq.read()
@@ -603,10 +611,10 @@ while running:
                         arq.write(novojson)
                 Mensage=False
             game_over_message(novodic)
-            score = 0
+            
             
 
-    novovalor=score
+
     pygame.display.flip()
     clock.tick(50)
 pygame.quit()
