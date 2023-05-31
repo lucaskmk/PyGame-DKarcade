@@ -454,6 +454,7 @@ TIME = 0
 Mensage = True
 screeninit = True
 while running:
+    novovalor=score
     if screeninit:
         start_screen()
     for event in pygame.event.get():
@@ -475,11 +476,10 @@ while running:
                 character.jump()
                     
                 
- 
+    
 
 
     if jogoinit:
-        novovalor=score
         screen.fill((0, 0, 0)) 
         for stair in STAIRS:
             STAIR_IMG = pygame.Surface.set_colorkey(stair.image, (0,0,0))
@@ -487,7 +487,7 @@ while running:
             #ganhouu        for stair in STAIRS:
             if character.rect.colliderect(stair.rect):     
                 if character.rect.y <= 50:
-                    score += 500
+                    novovalor += 500
                     game_over = True
         for platform in PLATFORMS:
             screen.blit(platform.image, platform.rect)
@@ -606,7 +606,7 @@ while running:
             score = 0
             
 
-
+    novovalor=score
     pygame.display.flip()
     clock.tick(50)
 pygame.quit()
