@@ -479,7 +479,7 @@ while running:
 
 
     if jogoinit:
-        
+        novovalor=score
         screen.fill((0, 0, 0)) 
         for stair in STAIRS:
             STAIR_IMG = pygame.Surface.set_colorkey(stair.image, (0,0,0))
@@ -497,9 +497,9 @@ while running:
             if tempframes >= 50:
                 TIME+=1
                 tempframes = 0
-            timewithammer = font.render("Tempo com Martelo :  " + str(7-TIME), True, (255, 255, 255))
+            timewithammer = font.render("Tempo com Martelo :  " + str(10-TIME), True, (255, 255, 255))
             screen.blit(timewithammer, (200, 10))
-        if TIME == 7:
+        if TIME == 10:
             character.equiped = False
             TIME = 0
         if not game_over:
@@ -513,7 +513,6 @@ while running:
 
                 if character.rect.colliderect(barrel.rect):
                     if not character.hit:
-                        novovalor=score
                         game_over = True
                     else:
                         barrel.velocity=0
