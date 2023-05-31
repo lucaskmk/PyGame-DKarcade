@@ -38,8 +38,12 @@ def start_screen(): #TELA DE INICIO
     screen.fill(BLACK)
     screen.blit(DKSTARTGAME, (0,0))
     # Display title text
-    font = pygame.font.Font(None, 48)
-    text = font.render("Game Title", True, WHITE)
+    title = pygame.font.Font(None, 80)
+    text = title.render("Donkey Kong Arcade", True, (255,0,0))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+    screen.blit(text, text_rect)
+    title = pygame.font.Font(None, 79)
+    text = title.render("Donkey Kong Arcade", True, BLACK)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
     screen.blit(text, text_rect)
     
@@ -162,7 +166,6 @@ class Character(pygame.sprite.Sprite):
 
         if self.on_stair: # se na escada so desenho da escada
             # Imagem escada
-
             if self.lastupdown_key == 'up' :
                 self.image = CHARACTER_IMG_UP
             elif self.lastupdown_key == 'down':
