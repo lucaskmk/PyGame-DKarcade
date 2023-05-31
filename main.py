@@ -36,7 +36,7 @@ martelosom.set_volume(0.05)
 
 def start_screen(): #TELA DE INICIO
     screen.fill(BLACK)
-    
+    screen.blit(DKSTARTGAME, (0,0))
     # Display title text
     font = pygame.font.Font(None, 48)
     text = font.render("Game Title", True, WHITE)
@@ -469,7 +469,7 @@ while running:
                               
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN and not screeninit:
             if game_over:
                 reset_game()
             elif event.key == pygame.K_SPACE:

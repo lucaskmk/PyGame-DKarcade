@@ -8,7 +8,8 @@ from settings import *
 # ========================== | PreSets | ==============================
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # ========================== | SPRITES | ==============================
-
+DKSTARTGAME = pygame.image.load('imagens\Donkey_Kong_flier.jpg').convert_alpha()
+DKSTARTGAME = pygame.transform.scale(DKSTARTGAME, (WIDTH, HEIGHT))
 CHARACTER_IMG=pygame.image.load('imagens/sprite_mario_direita.png').convert_alpha()
 CHARACTER_IMG=pygame.transform.scale(CHARACTER_IMG, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 CHARACTER_STAND_IMG_RIGHT = pygame.image.load('imagens\sprite_mario_direita.png').convert_alpha()
